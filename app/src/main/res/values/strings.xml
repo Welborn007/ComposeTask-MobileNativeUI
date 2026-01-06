@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ComposeTaskApp</string>
+    <string name="app_name">ComposeTask</string>
     <string name="powered_by">Powered By</string>
     <string name="developer_name">Mac Developers</string>
 </resources>
