@@ -20,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.macdevelopers.composetaskapp.R
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.macdevelopers.composetaskapp.ui.theme.PurpleGrey40
 
 @Composable
 fun SplashScreen(
@@ -55,7 +54,7 @@ fun SplashScreenBody() {
 
         Text(stringResource(id = R.string.app_name),
             style = MaterialTheme.typography.headlineLarge,
-            color = PurpleGrey40,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .align(Alignment.Center)
         )
@@ -64,10 +63,10 @@ fun SplashScreenBody() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Text(stringResource(id = R.string.powered_by),
+            Text(stringResource(id = R.string.label_powered_by),
                 style = MaterialTheme.typography.labelSmall)
 
-            Text(stringResource(id = R.string.developer_name),
+            Text(stringResource(id = R.string.label_developer_name),
                 style = MaterialTheme.typography.headlineSmall)
         }
     }

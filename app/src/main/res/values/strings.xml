@@ -1,5 +1,24 @@
 <resources>
     <string name="app_name">ComposeTask</string>
-    <string name="powered_by">Powered By</string>
-    <string name="developer_name">Mac Developers</string>
+
+    <!-- Splash Screen-->
+    <string name="label_powered_by">Powered By</string>
+    <string name="label_developer_name">Mac Developers</string>
+
+    <!--    Login Screen-->
+    <string name="label_login_greetingsText">"Hey,\nLogin Now."</string>
+    <string name="label_login_text1">If you are new / </string>
+    <string name="label_login_text2"> Create New</string>
+    <string name="label_login_emailField">Email</string>
+    <string name="label_login_passwordField">Password</string>
+    <string name="label_login_forgotPassword">Forgot Password?</string>
+    <string name="label_login_resetPassword">Reset</string>
+    <string name="label_login_btnText">Login</string>
+
+    <!-- Validation errors -->
+    <string name="error_email_required">Email is required</string>
+    <string name="error_email_invalid">Enter a valid email address</string>
+    <string name="error_password_required">Password is required</string>
+    <string name="error_password_length">Password must be at least 6 characters</string>
+
 </resources>
