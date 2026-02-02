@@ -2,7 +2,6 @@ package com.macdevelopers.composetaskapp.ui.screens.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,26 +10,34 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,33 +47,52 @@ import com.macdevelopers.composetaskapp.ui.theme.CardBackgroundWhite
 import com.macdevelopers.composetaskapp.ui.theme.LoginButtonRed
 import com.macdevelopers.composetaskapp.ui.theme.LoginEmailYellow
 import com.macdevelopers.composetaskapp.ui.theme.LoginPasswordWhite
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
 
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     onLoginSuccess: () -> Unit,
-    onSignupClick: () -> Unit
+    onCreateAccountClick: () -> Unit,
+    onResetClick: () -> Unit
 ) {
 
+    val state by viewModel.uiState.collectAsState()
+
     LoginScreenBody(
-        username = "",
-        password = "",
-        onUsernameChange = {},
-        onPasswordChange = {},
-        onLoginClick = {},
-        onCreateAccountClick = {},
-        onResetClick = {}
+        state = state,
+        onUsernameChange = viewModel::onUsernameChange,
+        onPasswordChange = viewModel::onPasswordChange,
+        onLoginClick = viewModel::onLoginClicked,
+        onCreateAccountClick = onCreateAccountClick,
+        onResetClick = onResetClick
     )
+
+    /* Optional: navigate after successful login */
+    if (!state.isLoading && state.usernameErrorRes == null && state.passwordErrorRes == null) {
+        // You may later observe a `loginSuccess` flag from state
+    }
 }
 
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
+fun LoginScreenBodyPreview() {
     LoginScreenBody(
-        username = "",
-        password = "",
+        state = LoginUiState(
+            username = "test@example.com",
+            password = "123456",
+            usernameErrorRes = null,
+            passwordErrorRes = null,
+            isLoading = false
+        ),
         onUsernameChange = {},
         onPasswordChange = {},
         onLoginClick = {},
@@ -76,16 +102,18 @@ fun LoginScreenPreview() {
 }
 
 
+
 @Composable
 fun LoginScreenBody(
-    username: String,
-    password: String,
+    state: LoginUiState,
     onUsernameChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
     onCreateAccountClick: () -> Unit,
     onResetClick: () -> Unit
 ) {
+    var passwordVisible by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -109,7 +137,7 @@ fun LoginScreenBody(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
-                    text = stringResource(id = R.string.label_login_greetingsText),
+                    text = stringResource(R.string.label_login_greetingsText),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -118,12 +146,12 @@ fun LoginScreenBody(
 
                 Row {
                     Text(
-                        text = stringResource(id = R.string.label_login_text1),
+                        text = stringResource(R.string.label_login_text1),
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.Gray
                     )
                     Text(
-                        text = stringResource(id = R.string.label_login_text2),
+                        text = stringResource(R.string.label_login_text2),
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.clickable { onCreateAccountClick() }
@@ -132,12 +160,20 @@ fun LoginScreenBody(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Username field
+                /* ---------------- Username ---------------- */
+
                 OutlinedTextField(
-                    value = username,
+                    value = state.username,
                     onValueChange = onUsernameChange,
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text(stringResource(id = R.string.label_login_emailField)) },
+                    singleLine = true,
+                    isError = state.usernameErrorRes != null,
+                    placeholder = {
+                        Text(stringResource(R.string.label_login_emailField))
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email
+                    ),
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedContainerColor = LoginEmailYellow,
@@ -153,23 +189,67 @@ fun LoginScreenBody(
                     }
                 )
 
+                state.usernameErrorRes?.let {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(it),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Password field
+                /* ---------------- Password ---------------- */
+
                 OutlinedTextField(
-                    value = password,
+                    value = state.password,
                     onValueChange = onPasswordChange,
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text(stringResource(id = R.string.label_login_passwordField)) },
-                    visualTransformation = PasswordVisualTransformation(),
+                    singleLine = true,
+                    isError = state.passwordErrorRes != null,
+                    placeholder = {
+                        Text(stringResource(R.string.label_login_passwordField))
+                    },
+                    visualTransformation =
+                        if (passwordVisible)
+                            VisualTransformation.None
+                        else
+                            PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password
+                    ),
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedContainerColor = LoginPasswordWhite,
                         focusedContainerColor = LoginPasswordWhite,
                         unfocusedBorderColor = Color.Transparent,
                         focusedBorderColor = Color.Transparent
-                    )
+                    ),
+                    trailingIcon = {
+                        IconButton(
+                            onClick = { passwordVisible = !passwordVisible }
+                        ) {
+                            Icon(
+                                imageVector =
+                                    if (passwordVisible)
+                                        Icons.Default.Visibility
+                                    else
+                                        Icons.Default.VisibilityOff,
+                                contentDescription = null
+                            )
+                        }
+                    }
                 )
+
+                state.passwordErrorRes?.let {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(it),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -178,12 +258,12 @@ fun LoginScreenBody(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = stringResource(id = R.string.label_login_forgotPassword),
+                        text = stringResource(R.string.label_login_forgotPassword),
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.Gray
                     )
                     Text(
-                        text = stringResource(id = R.string.label_login_resetPassword),
+                        text = stringResource(R.string.label_login_resetPassword),
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.clickable { onResetClick() }
@@ -197,14 +277,27 @@ fun LoginScreenBody(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),
+                    enabled = !state.isLoading,
                     shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LoginButtonRed
                     )
                 ) {
-                    Text(stringResource(id = R.string.label_login_btnText), color = Color.White)
+                    if (state.isLoading) {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(R.string.label_login_btnText),
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }
     }
 }
+

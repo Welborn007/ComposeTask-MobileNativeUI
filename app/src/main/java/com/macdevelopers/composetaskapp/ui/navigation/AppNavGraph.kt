@@ -39,8 +39,11 @@ fun AppNavGraph() {
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 },
-                onSignupClick = {
+                onCreateAccountClick = {
                     navController.navigate(Screen.Signup.route)
+                },
+                onResetClick = {
+                    navController.navigate(Screen.Reset.route)
                 }
             )
         }
