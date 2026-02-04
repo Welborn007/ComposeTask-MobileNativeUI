@@ -1,4 +1,4 @@
-package com.macdevelopers.composetaskapp.data.local
+package com.macdevelopers.composetaskapp.data.local.preferences
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext

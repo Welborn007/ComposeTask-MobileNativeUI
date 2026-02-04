@@ -1,6 +1,6 @@
 package com.macdevelopers.composetaskapp.di
 
-import com.macdevelopers.composetaskapp.data.local.AuthPreferences
+import com.macdevelopers.composetaskapp.data.local.preferences.AuthPreferences
 import com.macdevelopers.composetaskapp.data.repository.AuthRepositoryImpl
 import com.macdevelopers.composetaskapp.domain.repository.AuthRepository
 import com.macdevelopers.composetaskapp.domain.usecase.IsUserLoggedInUseCase
