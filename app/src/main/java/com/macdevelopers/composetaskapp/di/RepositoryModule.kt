@@ -1,4 +1,20 @@
 package com.macdevelopers.composetaskapp.di
 
-class RepositoryModule {
+import com.macdevelopers.composetaskapp.data.repository.AuthRepositoryImpl
+import com.macdevelopers.composetaskapp.domain.repository.AuthRepository
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(
+        impl: AuthRepositoryImpl
+    ): AuthRepository
 }

@@ -1,4 +1,6 @@
 package com.macdevelopers.composetaskapp.data.remote.dto
 
-class LoginResponseDto {
-}
+data class LoginResponseDto(
+    val token: String,
+    val message: String
+)

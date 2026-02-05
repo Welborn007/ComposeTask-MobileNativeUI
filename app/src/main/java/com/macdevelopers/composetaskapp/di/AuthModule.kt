@@ -16,14 +16,6 @@ import javax.inject.Singleton
 object AuthModule {
 
     @Provides
-    @Singleton
-    fun provideAuthRepository(
-        prefs: AuthPreferences
-    ): AuthRepository {
-        return AuthRepositoryImpl(prefs)
-    }
-
-    @Provides
     fun provideLoginUseCase(
         repository: AuthRepository
     ): LoginUseCase {

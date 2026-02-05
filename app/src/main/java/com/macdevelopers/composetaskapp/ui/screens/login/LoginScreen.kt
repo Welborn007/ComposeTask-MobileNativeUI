@@ -50,10 +50,14 @@ import com.macdevelopers.composetaskapp.ui.theme.LoginPasswordWhite
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 
 @Composable
@@ -64,20 +68,40 @@ fun LoginScreen(
     onResetClick: () -> Unit
 ) {
 
-    val state by viewModel.uiState.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val errorMessage = state.passwordErrorRes?.let { stringResource(it) }
 
-    LoginScreenBody(
-        state = state,
-        onUsernameChange = viewModel::onUsernameChange,
-        onPasswordChange = viewModel::onPasswordChange,
-        onLoginClick = viewModel::onLoginClicked,
-        onCreateAccountClick = onCreateAccountClick,
-        onResetClick = onResetClick
-    )
 
-    /* Optional: navigate after successful login */
-    if (!state.isLoading && state.usernameErrorRes == null && state.passwordErrorRes == null) {
-        // You may later observe a `loginSuccess` flag from state
+    if (state.loginSuccess) {
+        LaunchedEffect(Unit) {
+            onLoginSuccess()
+            viewModel.onLoginHandled()
+        }
+    }
+
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let {
+            snackbarHostState.showSnackbar(
+                it
+            )
+        }
+    }
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
+    ) { padding ->
+
+        LoginScreenBody(
+            modifier = Modifier.padding(padding),
+            state = state,
+            onUsernameChange = viewModel::onUsernameChange,
+            onPasswordChange = viewModel::onPasswordChange,
+            onLoginClick = viewModel::onLoginClicked,
+            onCreateAccountClick = onCreateAccountClick,
+            onResetClick = onResetClick
+        )
     }
 }
 
@@ -105,6 +129,7 @@ fun LoginScreenBodyPreview() {
 
 @Composable
 fun LoginScreenBody(
+    modifier: Modifier = Modifier,
     state: LoginUiState,
     onUsernameChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
@@ -115,7 +140,7 @@ fun LoginScreenBody(
     var passwordVisible by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(BackgroundWhite)
             .systemBarsPadding(),

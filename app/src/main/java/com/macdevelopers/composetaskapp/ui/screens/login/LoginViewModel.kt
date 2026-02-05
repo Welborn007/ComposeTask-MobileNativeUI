@@ -4,11 +4,14 @@ package com.macdevelopers.composetaskapp.ui.screens.login
 import com.macdevelopers.composetaskapp.R
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.macdevelopers.composetaskapp.domain.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,38 +20,33 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
-    val uiState = _uiState.asStateFlow()
+    val uiState: StateFlow<LoginUiState> = _uiState
 
-    fun onUsernameChange(value: String) {
+    // --- Input updates ---
+    fun onUsernameChange(username: String) {
         _uiState.update {
-            it.copy(username = value, usernameErrorRes = null)
+            it.copy(
+                username = username,
+                usernameErrorRes = null
+            )
+        }
+    }
+    fun onPasswordChange(password: String) {
+        _uiState.update {
+            it.copy(
+                password = password,
+                passwordErrorRes = null
+            )
         }
     }
 
-    fun onPasswordChange(value: String) {
-        _uiState.update {
-            it.copy(password = value, passwordErrorRes = null)
-        }
-    }
 
+    // --- Login action ---
     fun onLoginClicked() {
         val state = _uiState.value
 
-        val usernameError = when {
-            state.username.isBlank() ->
-                R.string.error_email_required
-            !Patterns.EMAIL_ADDRESS.matcher(state.username).matches() ->
-                R.string.error_email_invalid
-            else -> null
-        }
-
-        val passwordError = when {
-            state.password.isBlank() ->
-                R.string.error_password_required
-            state.password.length < 6 ->
-                R.string.error_password_length
-            else -> null
-        }
+        val usernameError = validateUsername(state.username)
+        val passwordError = validatePassword(state.password)
 
         if (usernameError != null || passwordError != null) {
             _uiState.update {
@@ -60,12 +58,57 @@ class LoginViewModel @Inject constructor(
             return
         }
 
-        // Proceed with API call
-        login(state.username, state.password)
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            val result = loginUseCase(
+                email = state.username,
+                password = state.password
+            )
+
+            result
+                .onSuccess {
+                    _uiState.update {
+                        it.copy(isLoading = false,
+                            loginSuccess = true)
+                    }
+                    // Navigation should be triggered by UI observing success
+                }
+                .onFailure {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            passwordErrorRes = R.string.error_login_failed
+                        )
+                    }
+                }
+        }
     }
 
-    private fun login(username: String, password: String) {
-        // call use case here
+    // --- Validation helpers ---
+    private fun validateUsername(username: String): Int? {
+        if (username.isBlank()) {
+            return R.string.error_email_required
+        }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(username).matches()) {
+            return R.string.error_invalid_email
+        }
+        return null
     }
+
+    private fun validatePassword(password: String): Int? {
+        if (password.isBlank()) {
+            return R.string.error_password_required
+        }
+        if (password.length < 6) {
+            return R.string.error_password_min_length
+        }
+        return null
+    }
+
+    fun onLoginHandled() {
+        _uiState.update { it.copy(loginSuccess = false) }
+    }
+
 }
 
