@@ -52,6 +52,9 @@ fun AppNavGraph() {
             SignupScreen(
                 onSignupSuccess = {
                     navController.popBackStack()
+                },
+                onLoginClick = {
+                    navController.popBackStack()
                 }
             )
         }

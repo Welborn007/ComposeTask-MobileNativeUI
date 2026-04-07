@@ -22,5 +22,14 @@
     <string name="error_password_min_length">Password must be at least 6 characters</string>
     <string name="error_login_failed">Invalid email or password</string>
 
+    <!--Signup strings-->
+    <string name="label_signup_title">Create Account</string>
+    <string name="label_signup_have_account">Already have an account? </string>
+    <string name="label_signup_login">Login</string>
 
+    <string name="label_signup_name">Full Name</string>
+    <string name="label_signup_email">Email Address</string>
+    <string name="label_signup_password">Password</string>
+
+    <string name="label_signup_button">Sign Up</string>
 </resources>
