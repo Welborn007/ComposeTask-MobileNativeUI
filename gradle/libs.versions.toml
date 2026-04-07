@@ -1,6 +1,7 @@
 [versions]
 agp = "8.13.2"
 kotlin = "1.9.25"
+ksp = "1.9.25-1.0.20"
 
 composeBom = "2024.12.01"
 activityCompose = "1.9.3"
@@ -15,12 +16,13 @@ retrofit = "2.11.0"
 okhttp = "4.12.0"
 room = "2.6.1"
 datastore = "1.1.1"
+junit = "4.13.2"
 
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 
 [libraries]
@@ -63,4 +65,4 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 # DataStore
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
-
+junit = { group = "junit", name = "junit", version.ref = "junit" }
