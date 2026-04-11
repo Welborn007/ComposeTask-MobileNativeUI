@@ -287,3 +287,12 @@ fun SignupScreenBodyPreview() {
         isLoading = false
     )
 }
+
+@Preview(showBackground = true)
+@Composable
+fun SignupScreenPreview() {
+    SignupScreen(
+        onSignupSuccess = {},
+        onLoginClick = {}
+    )
+}
