@@ -6,4 +6,9 @@ interface AuthRepository {
         email: String,
         password: String
     ): Result<String>
+    suspend fun signup(
+        name: String,
+        email: String,
+        password: String
+    ): Result<String>
 }
