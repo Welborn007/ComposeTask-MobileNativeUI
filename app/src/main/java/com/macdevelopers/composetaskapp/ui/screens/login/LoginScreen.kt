@@ -15,9 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -57,9 +54,6 @@ fun LoginScreen(
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val errorMessage = state.passwordErrorRes?.let { stringResource(it) }
-
 
     if (state.loginSuccess) {
         LaunchedEffect(Unit) {
@@ -68,29 +62,14 @@ fun LoginScreen(
         }
     }
 
-    LaunchedEffect(errorMessage) {
-        errorMessage?.let {
-            snackbarHostState.showSnackbar(
-                it
-            )
-        }
-    }
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        }
-    ) { padding ->
-
-        LoginScreenBody(
-            modifier = Modifier.padding(padding),
-            state = state,
-            onUsernameChange = viewModel::onUsernameChange,
-            onPasswordChange = viewModel::onPasswordChange,
-            onLoginClick = viewModel::onLoginClicked,
-            onCreateAccountClick = onCreateAccountClick,
-            onResetClick = onResetClick
-        )
-    }
+    LoginScreenBody(
+        state = state,
+        onUsernameChange = viewModel::onUsernameChange,
+        onPasswordChange = viewModel::onPasswordChange,
+        onLoginClick = viewModel::onLoginClicked,
+        onCreateAccountClick = onCreateAccountClick,
+        onResetClick = onResetClick
+    )
 }
 
 
