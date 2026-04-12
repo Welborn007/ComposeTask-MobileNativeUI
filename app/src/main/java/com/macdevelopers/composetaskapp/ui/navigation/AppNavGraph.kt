@@ -7,31 +7,15 @@ import androidx.navigation.compose.rememberNavController
 import com.macdevelopers.composetaskapp.ui.screens.home.HomeScreen
 import com.macdevelopers.composetaskapp.ui.screens.login.LoginScreen
 import com.macdevelopers.composetaskapp.ui.screens.signup.SignupScreen
-import com.macdevelopers.composetaskapp.ui.screens.splash.SplashScreen
 
 @Composable
-fun AppNavGraph() {
+fun AppNavGraph(startDestination: String = Screen.Login.route) {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route
+        startDestination = startDestination
     ) {
-        composable(Screen.Splash.route) {
-            SplashScreen(
-                onNavigateToLogin = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.Splash.route) { inclusive = true }
-                    }
-                },
-                onNavigateToHome = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Splash.route) { inclusive = true }
-                    }
-                }
-            )
-        }
-
         composable(Screen.Login.route) {
             LoginScreen(
                 onLoginSuccess = {
