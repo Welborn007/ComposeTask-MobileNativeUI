@@ -2,7 +2,6 @@ package com.macdevelopers.composetaskapp.ui.screens.login
 
 
 import com.macdevelopers.composetaskapp.R
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.macdevelopers.composetaskapp.domain.model.NetworkException
@@ -94,10 +93,15 @@ class LoginViewModel @Inject constructor(
         if (username.isBlank()) {
             return R.string.error_email_required
         }
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(username).matches()) {
+        if (!isValidEmail(username)) {
             return R.string.error_invalid_email
         }
         return null
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$".toRegex()
+        return emailRegex.matches(email)
     }
 
     private fun validatePassword(password: String): Int? {

@@ -17,6 +17,9 @@ okhttp = "5.3.2"
 room = "2.8.4"
 datastore = "1.2.1"
 junit = "4.13.2"
+mockito = "5.5.0"
+mockitoKotlin = "5.1.0"
+coroutinesTest = "1.7.3"
 
 
 [plugins]
@@ -66,3 +69,7 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin" }

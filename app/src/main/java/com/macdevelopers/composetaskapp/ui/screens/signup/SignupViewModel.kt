@@ -1,7 +1,6 @@
 package com.macdevelopers.composetaskapp.ui.screens.signup
 
 import com.macdevelopers.composetaskapp.R
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.macdevelopers.composetaskapp.domain.model.NetworkException
@@ -115,10 +114,15 @@ class SignupViewModel @Inject constructor(
         if (email.isBlank()) {
             return R.string.error_email_required
         }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (!isValidEmail(email)) {
             return R.string.error_invalid_email
         }
         return null
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$".toRegex()
+        return emailRegex.matches(email)
     }
 
     private fun validatePassword(password: String): Int? {
