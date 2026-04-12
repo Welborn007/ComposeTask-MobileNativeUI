@@ -1,8 +1,6 @@
 package com.macdevelopers.composetaskapp.ui.screens.signup
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,25 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import com.macdevelopers.composetaskapp.R
@@ -39,19 +22,23 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
+import com.macdevelopers.composetaskapp.ui.components.AppButton
+import com.macdevelopers.composetaskapp.ui.components.AppCard
+import com.macdevelopers.composetaskapp.ui.components.AppText
 import com.macdevelopers.composetaskapp.ui.theme.BackgroundWhite
-import com.macdevelopers.composetaskapp.ui.theme.CardBackgroundWhite
-import com.macdevelopers.composetaskapp.ui.theme.LoginButtonRed
+import com.macdevelopers.composetaskapp.ui.theme.ComposeTaskAppTheme
+import com.macdevelopers.composetaskapp.ui.theme.Dimens
+import com.macdevelopers.composetaskapp.ui.theme.LoginClickable
 import com.macdevelopers.composetaskapp.ui.theme.LoginEmailYellow
 import com.macdevelopers.composetaskapp.ui.theme.LoginPasswordWhite
-import androidx.compose.ui.tooling.preview.Preview
+import com.macdevelopers.composetaskapp.ui.theme.LoginTextSecondary
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.text.font.FontWeight
+import com.macdevelopers.composetaskapp.ui.components.AppTextField
+import com.macdevelopers.composetaskapp.ui.theme.LoginTextPrimary
 
 @Composable
 fun SignupScreen(
@@ -101,172 +88,78 @@ fun SignupScreenBody(
             .systemBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
-
-        Card(
+        AppCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(28.dp),
-            colors = CardDefaults.cardColors(containerColor = CardBackgroundWhite)
+                .padding(Dimens.ScreenPadding)
         ) {
-
             Column(
                 modifier = Modifier
-                    .padding(24.dp)
+                    .padding(Dimens.CardPadding)
                     .fillMaxWidth()
             ) {
+                Spacer(modifier = Modifier.height(Dimens.TitleSpacing))
 
-                Spacer(modifier = Modifier.height(12.dp))
+                AppText(text = stringResource(R.string.label_signup_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
 
-                Text(
-                    text = stringResource(R.string.label_signup_title),
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(Dimens.TitleSpacing))
 
                 Row {
-                    Text(
-                        text = stringResource(R.string.label_signup_have_account),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.Gray
-                    )
-
-                    Text(
-                        text = stringResource(R.string.label_signup_login),
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.clickable { onLoginClick() }
-                    )
+                    AppText(text = stringResource(R.string.label_signup_have_account), style = MaterialTheme.typography.bodySmall, color = LoginTextSecondary)
+                    Spacer(modifier = Modifier.width(Dimens.SmallSpacing))
+                    AppText(text = stringResource(R.string.label_signup_login), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = LoginTextPrimary, onClick = onLoginClick)
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(Dimens.SectionSpacing))
 
                 /* ---------------- NAME ---------------- */
 
-                OutlinedTextField(
+                AppTextField(
                     value = name,
                     onValueChange = onNameChange,
+                    placeholder = stringResource(R.string.label_signup_name),
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    placeholder = {
-                        Text(stringResource(R.string.label_signup_name))
-                    },
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = LoginPasswordWhite,
-                        focusedContainerColor = LoginPasswordWhite,
-                        unfocusedBorderColor = Color.Transparent,
-                        focusedBorderColor = Color.Transparent
-                    )
+                    backgroundColor = LoginPasswordWhite
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimens.FieldSpacing))
 
                 /* ---------------- EMAIL ---------------- */
 
-                OutlinedTextField(
+                AppTextField(
                     value = email,
                     onValueChange = onEmailChange,
+                    placeholder = stringResource(R.string.label_signup_email),
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    placeholder = {
-                        Text(stringResource(R.string.label_signup_email))
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = LoginEmailYellow,
-                        focusedContainerColor = LoginEmailYellow,
-                        unfocusedBorderColor = Color.Transparent,
-                        focusedBorderColor = Color.Transparent
-                    ),
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Email,
-                            contentDescription = null
-                        )
-                    }
+                    keyboardType = KeyboardType.Email,
+                    icon = Icons.Default.Email,
+                    backgroundColor = LoginEmailYellow
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimens.FieldSpacing))
 
                 /* ---------------- PASSWORD ---------------- */
 
-                OutlinedTextField(
+                AppTextField(
                     value = password,
                     onValueChange = onPasswordChange,
+                    placeholder = stringResource(R.string.label_signup_password),
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    placeholder = {
-                        Text(stringResource(R.string.label_signup_password))
-                    },
-                    visualTransformation =
-                        if (passwordVisible)
-                            VisualTransformation.None
-                        else
-                            PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = LoginPasswordWhite,
-                        focusedContainerColor = LoginPasswordWhite,
-                        unfocusedBorderColor = Color.Transparent,
-                        focusedBorderColor = Color.Transparent
-                    ),
-                    trailingIcon = {
-                        IconButton(
-                            onClick = { passwordVisible = !passwordVisible }
-                        ) {
-                            Icon(
-                                imageVector =
-                                    if (passwordVisible)
-                                        Icons.Default.Visibility
-                                    else
-                                        Icons.Default.VisibilityOff,
-                                contentDescription = null
-                            )
-                        }
-                    }
+                    isPassword = true,
+                    passwordVisible = passwordVisible,
+                    onPasswordVisibilityToggle = { passwordVisible = !passwordVisible },
+                    backgroundColor = LoginPasswordWhite
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(Dimens.LargeButtonSpacing))
 
                 /* ---------------- SIGNUP BUTTON ---------------- */
 
-                Button(
+                AppButton(
+                    text = stringResource(R.string.label_signup_button),
                     onClick = onSignupClick,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    enabled = !isLoading,
-                    shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = LoginButtonRed
-                    )
-                ) {
-
-                    if (isLoading) {
-
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            strokeWidth = 2.dp,
-                            color = Color.White
-                        )
-
-                    } else {
-
-                        Text(
-                            text = stringResource(R.string.label_signup_button),
-                            color = Color.White
-                        )
-                    }
-                }
+                    isLoading = isLoading
+                )
             }
         }
     }
@@ -275,24 +168,28 @@ fun SignupScreenBody(
 @Preview(showBackground = true)
 @Composable
 fun SignupScreenBodyPreview() {
-    SignupScreenBody(
-        name = "",
-        email = "",
-        password = "",
-        onNameChange = {},
-        onEmailChange = {},
-        onPasswordChange = {},
-        onSignupClick = {},
-        onLoginClick = {},
-        isLoading = false
-    )
+    ComposeTaskAppTheme {
+        SignupScreenBody(
+            name = "",
+            email = "",
+            password = "",
+            onNameChange = {},
+            onEmailChange = {},
+            onPasswordChange = {},
+            onSignupClick = {},
+            onLoginClick = {},
+            isLoading = false
+        )
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun SignupScreenPreview() {
-    SignupScreen(
-        onSignupSuccess = {},
-        onLoginClick = {}
-    )
+    ComposeTaskAppTheme {
+        SignupScreen(
+            onSignupSuccess = {},
+            onLoginClick = {}
+        )
+    }
 }
