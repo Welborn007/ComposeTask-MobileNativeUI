@@ -38,6 +38,9 @@
 
     <string name="label_signup_button">Sign Up</string>
 
+    <!-- Home Screen -->
+    <string name="menu_logout">Logout</string>
+
     <!-- Content Descriptions for Accessibility -->
     <string name="cd_network_error">Network Error Warning</string>
 </resources>

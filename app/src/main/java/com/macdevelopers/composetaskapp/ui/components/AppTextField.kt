@@ -57,7 +57,9 @@ fun AppTextField(
             unfocusedContainerColor = backgroundColor,
             focusedContainerColor = backgroundColor,
             unfocusedBorderColor = unfocusedBorderColor,
-            focusedBorderColor = focusedBorderColor
+            focusedBorderColor = focusedBorderColor,
+            unfocusedTextColor = Color.Black,
+            focusedTextColor = Color.Black
         ),
         visualTransformation = if (isPassword) {
             if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation()

@@ -44,7 +44,11 @@ fun AppNavGraph(startDestination: String = Screen.Login.route) {
         }
 
         composable(Screen.Home.route) {
-            HomeScreen()
+            HomeScreen(onLogout = {
+                navController.navigate(Screen.Login.route) {
+                    popUpTo(0)
+                }
+            })
         }
     }
 }
