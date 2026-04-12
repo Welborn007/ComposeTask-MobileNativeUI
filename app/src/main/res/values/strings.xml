@@ -23,6 +23,9 @@
     <string name="error_login_failed">Invalid email or password</string>
     <string name="error_no_internet">No internet connection. Please check your network.</string>
     <string name="error_login_generic">Login failed</string>
+    <string name="error_name_required">Name is required</string>
+    <string name="error_name_min_length">Name must be at least 2 characters</string>
+    <string name="error_signup_failed">Signup failed. Please try again.</string>
 
     <!--Signup strings-->
     <string name="label_signup_title">Create Account</string>
