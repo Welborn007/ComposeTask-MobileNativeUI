@@ -2,6 +2,7 @@ package com.macdevelopers.composetaskapp.data.local.preferences
 
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.macdevelopers.composetaskapp.data.local.authDataStore
@@ -13,14 +14,8 @@ import javax.inject.Inject
 class AuthPreferences @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    private val prefs =
-        context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
-
-    fun isLoggedIn(): Boolean {
-        return prefs.getBoolean("logged_in", false)
-    }
-
     private val TOKEN_KEY = stringPreferencesKey("auth_token")
+    private val LOGGED_IN_KEY = booleanPreferencesKey("logged_in")
 
     suspend fun saveToken(token: String) {
         context.authDataStore.edit { prefs ->
@@ -37,6 +32,24 @@ class AuthPreferences @Inject constructor(
     suspend fun clearToken() {
         context.authDataStore.edit { prefs ->
             prefs.remove(TOKEN_KEY)
+        }
+    }
+
+    suspend fun setLoggedIn(loggedIn: Boolean) {
+        context.authDataStore.edit { prefs ->
+            prefs[LOGGED_IN_KEY] = loggedIn
+        }
+    }
+
+    fun isLoggedIn(): Flow<Boolean> {
+        return context.authDataStore.data.map { prefs ->
+            prefs[LOGGED_IN_KEY] ?: false
+        }
+    }
+
+    suspend fun clearAll() {
+        context.authDataStore.edit { prefs ->
+            prefs.clear()
         }
     }
 }

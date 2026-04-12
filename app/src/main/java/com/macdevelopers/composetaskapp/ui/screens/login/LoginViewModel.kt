@@ -5,6 +5,7 @@ import com.macdevelopers.composetaskapp.R
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.macdevelopers.composetaskapp.domain.model.NetworkException
 import com.macdevelopers.composetaskapp.domain.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,7 +60,7 @@ class LoginViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isLoading = true, networkError = false) }
 
             val result = loginUseCase(
                 email = state.username,
@@ -74,11 +75,14 @@ class LoginViewModel @Inject constructor(
                     }
                     // Navigation should be triggered by UI observing success
                 }
-                .onFailure {
+                .onFailure { exception ->
+                    val isNetworkError = exception is NetworkException
+
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            passwordErrorRes = R.string.error_login_failed
+                            networkError = isNetworkError,
+                            passwordErrorRes = if (isNetworkError) null else R.string.error_login_failed
                         )
                     }
                 }
@@ -111,4 +115,3 @@ class LoginViewModel @Inject constructor(
     }
 
 }
-

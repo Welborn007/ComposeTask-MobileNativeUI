@@ -21,6 +21,8 @@
     <string name="error_password_required">Password is required</string>
     <string name="error_password_min_length">Password must be at least 6 characters</string>
     <string name="error_login_failed">Invalid email or password</string>
+    <string name="error_no_internet">No internet connection. Please check your network.</string>
+    <string name="error_login_generic">Login failed</string>
 
     <!--Signup strings-->
     <string name="label_signup_title">Create Account</string>
@@ -32,4 +34,7 @@
     <string name="label_signup_password">Password</string>
 
     <string name="label_signup_button">Sign Up</string>
+
+    <!-- Content Descriptions for Accessibility -->
+    <string name="cd_network_error">Network Error Warning</string>
 </resources>

@@ -32,6 +32,7 @@ import com.macdevelopers.composetaskapp.R
 import com.macdevelopers.composetaskapp.ui.components.AppButton
 import com.macdevelopers.composetaskapp.ui.components.AppCard
 import com.macdevelopers.composetaskapp.ui.components.AppText
+import com.macdevelopers.composetaskapp.ui.components.NetworkErrorBanner
 import com.macdevelopers.composetaskapp.ui.theme.BackgroundWhite
 import com.macdevelopers.composetaskapp.ui.theme.ComposeTaskAppTheme
 import com.macdevelopers.composetaskapp.ui.theme.Dimens
@@ -107,92 +108,107 @@ fun LoginScreenBody(
     onResetClick: () -> Unit
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
+    var showNetworkError by remember { mutableStateOf(state.networkError) }
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(BackgroundWhite)
-            .systemBarsPadding(),
-        contentAlignment = Alignment.Center
+    LaunchedEffect(state.networkError) {
+        showNetworkError = state.networkError
+    }
+
+    Column(
+        modifier = modifier.fillMaxSize()
     ) {
-        AppCard(
+        NetworkErrorBanner(
+            message = stringResource(R.string.error_no_internet),
+            isVisible = showNetworkError,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(Dimens.ScreenPadding)
+                .fillMaxSize()
+                .background(BackgroundWhite)
+                .systemBarsPadding(),
+            contentAlignment = Alignment.Center
         ) {
-            Column(
+            AppCard(
                 modifier = Modifier
-                    .padding(Dimens.CardPadding)
                     .fillMaxWidth()
+                    .padding(Dimens.ScreenPadding)
             ) {
-                Spacer(modifier = Modifier.height(Dimens.TitleSpacing))
-
-                AppText(text = stringResource(R.string.label_login_greetingsText), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = LoginGreetingText)
-
-                Spacer(modifier = Modifier.height(Dimens.TitleSpacing))
-
-                Row {
-                    AppText(text = stringResource(R.string.label_login_text1), style = MaterialTheme.typography.bodySmall, color = LoginTextSecondary)
-                    Spacer(modifier = Modifier.width(Dimens.SmallSpacing))
-                    AppText(text = stringResource(R.string.label_login_text2), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = LoginTextPrimary, onClick = onCreateAccountClick)
-                }
-
-                Spacer(modifier = Modifier.height(Dimens.SectionSpacing))
-
-                /* Email TextField */
-                AppTextField(
-                    value = state.username,
-                    onValueChange = onUsernameChange,
-                    placeholder = stringResource(R.string.label_login_emailField),
-                    modifier = Modifier.fillMaxWidth(),
-                    isError = state.usernameErrorRes != null,
-                    keyboardType = KeyboardType.Email,
-                    icon = Icons.Default.Email,
-                    backgroundColor = LoginEmailYellow
-                )
-
-                state.usernameErrorRes?.let {
-                    Spacer(modifier = Modifier.height(Dimens.SmallSpacing))
-                    AppText(text = stringResource(it), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
-                }
-
-                Spacer(modifier = Modifier.height(Dimens.FieldSpacing))
-
-                /* Password TextField */
-                AppTextField(
-                    value = state.password,
-                    onValueChange = onPasswordChange,
-                    placeholder = stringResource(R.string.label_login_passwordField),
-                    modifier = Modifier.fillMaxWidth(),
-                    isError = state.passwordErrorRes != null,
-                    isPassword = true,
-                    passwordVisible = passwordVisible,
-                    onPasswordVisibilityToggle = { passwordVisible = !passwordVisible },
-                    backgroundColor = LoginPasswordWhite
-                )
-
-                state.passwordErrorRes?.let {
-                    Spacer(modifier = Modifier.height(Dimens.SmallSpacing))
-                    AppText(text = stringResource(it), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
-                }
-
-                Spacer(modifier = Modifier.height(Dimens.TitleSpacing))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                Column(
+                    modifier = Modifier
+                        .padding(Dimens.CardPadding)
+                        .fillMaxWidth()
                 ) {
-                    AppText(text = stringResource(R.string.label_login_forgotPassword), style = MaterialTheme.typography.bodySmall, color = LoginTextSecondary)
-                    AppText(text = stringResource(R.string.label_login_resetPassword), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = LoginClickable, onClick = onResetClick)
+                    Spacer(modifier = Modifier.height(Dimens.TitleSpacing))
+
+                    AppText(text = stringResource(R.string.label_login_greetingsText), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = LoginGreetingText)
+
+                    Spacer(modifier = Modifier.height(Dimens.TitleSpacing))
+
+                    Row {
+                        AppText(text = stringResource(R.string.label_login_text1), style = MaterialTheme.typography.bodySmall, color = LoginTextSecondary)
+                        Spacer(modifier = Modifier.width(Dimens.SmallSpacing))
+                        AppText(text = stringResource(R.string.label_login_text2), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = LoginTextPrimary, onClick = onCreateAccountClick)
+                    }
+
+                    Spacer(modifier = Modifier.height(Dimens.SectionSpacing))
+
+                    /* Email TextField */
+                    AppTextField(
+                        value = state.username,
+                        onValueChange = onUsernameChange,
+                        placeholder = stringResource(R.string.label_login_emailField),
+                        modifier = Modifier.fillMaxWidth(),
+                        isError = state.usernameErrorRes != null,
+                        keyboardType = KeyboardType.Email,
+                        icon = Icons.Default.Email,
+                        backgroundColor = LoginEmailYellow
+                    )
+
+                    state.usernameErrorRes?.let {
+                        Spacer(modifier = Modifier.height(Dimens.SmallSpacing))
+                        AppText(text = stringResource(it), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+                    }
+
+                    Spacer(modifier = Modifier.height(Dimens.FieldSpacing))
+
+                    /* Password TextField */
+                    AppTextField(
+                        value = state.password,
+                        onValueChange = onPasswordChange,
+                        placeholder = stringResource(R.string.label_login_passwordField),
+                        modifier = Modifier.fillMaxWidth(),
+                        isError = state.passwordErrorRes != null,
+                        isPassword = true,
+                        passwordVisible = passwordVisible,
+                        onPasswordVisibilityToggle = { passwordVisible = !passwordVisible },
+                        backgroundColor = LoginPasswordWhite
+                    )
+
+                    state.passwordErrorRes?.let {
+                        Spacer(modifier = Modifier.height(Dimens.SmallSpacing))
+                        AppText(text = stringResource(it), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+                    }
+
+                    Spacer(modifier = Modifier.height(Dimens.TitleSpacing))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        AppText(text = stringResource(R.string.label_login_forgotPassword), style = MaterialTheme.typography.bodySmall, color = LoginTextSecondary)
+                        AppText(text = stringResource(R.string.label_login_resetPassword), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = LoginClickable, onClick = onResetClick)
+                    }
+
+                    Spacer(modifier = Modifier.height(Dimens.LargeButtonSpacing))
+
+                    AppButton(
+                        text = stringResource(R.string.label_login_btnText),
+                        onClick = onLoginClick,
+                        isLoading = state.isLoading
+                    )
                 }
-
-                Spacer(modifier = Modifier.height(Dimens.LargeButtonSpacing))
-
-                AppButton(
-                    text = stringResource(R.string.label_login_btnText),
-                    onClick = onLoginClick,
-                    isLoading = state.isLoading
-                )
             }
         }
     }
