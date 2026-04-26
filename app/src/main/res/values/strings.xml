@@ -40,7 +40,14 @@
 
     <!-- Home Screen -->
     <string name="menu_logout">Logout</string>
+    <string name="menu_home">Home</string>
+    <string name="label_verified">Verified</string>
+    <string name="label_gst">GST: %1$s</string>
+    <string name="label_not_available">N/A</string>
+    <string name="label_available_vendors">Available Vendors</string>
 
     <!-- Content Descriptions for Accessibility -->
     <string name="cd_network_error">Network Error Warning</string>
+    <string name="cd_menu">Menu</string>
+    <string name="cd_verified">Verified</string>
 </resources>

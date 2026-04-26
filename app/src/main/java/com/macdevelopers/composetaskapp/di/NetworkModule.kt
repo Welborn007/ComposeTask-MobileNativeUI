@@ -15,7 +15,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "http://192.168.0.112:8080/api/"
+    private const val BASE_URL = "http://192.168.0.106:8080/api/"
 
     @Provides
     @Singleton
@@ -53,6 +53,14 @@ object NetworkModule {
         retrofit: Retrofit
     ): AuthApi {
         return retrofit.create(AuthApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideVendorApi(
+        retrofit: Retrofit
+    ): com.macdevelopers.composetaskapp.data.remote.VendorApi {
+        return retrofit.create(com.macdevelopers.composetaskapp.data.remote.VendorApi::class.java)
     }
 }
 

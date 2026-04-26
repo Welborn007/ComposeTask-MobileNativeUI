@@ -17,4 +17,10 @@ abstract class RepositoryModule {
     abstract fun bindAuthRepository(
         impl: AuthRepositoryImpl
     ): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindVendorRepository(
+        impl: com.macdevelopers.composetaskapp.data.repository.VendorRepositoryImpl
+    ): com.macdevelopers.composetaskapp.domain.repository.VendorRepository
 }
