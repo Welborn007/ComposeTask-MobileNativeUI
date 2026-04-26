@@ -67,8 +67,6 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
     // Networking
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
 
@@ -86,4 +84,7 @@ dependencies {
     testImplementation(libs.mockito)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.coroutines.test)
+
+    // Shared Module
+    implementation(project(":shared"))
 }

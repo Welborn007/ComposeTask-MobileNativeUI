@@ -1,26 +1,38 @@
 package com.macdevelopers.composetaskapp.di
 
-import com.macdevelopers.composetaskapp.data.repository.AuthRepositoryImpl
-import com.macdevelopers.composetaskapp.domain.repository.AuthRepository
-import dagger.Binds
+import com.macdevelopers.shared.data.local.SharedAuthPreferences
+import com.macdevelopers.shared.data.repository.VendorRepositoryImpl
+import com.macdevelopers.shared.domain.repository.AuthRepository
+import com.macdevelopers.shared.domain.repository.VendorRepository
+import com.macdevelopers.shared.data.repository.AuthRepositoryImpl as SharedAuthRepositoryImpl
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.ktor.client.HttpClient
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
+object RepositoryModule {
 
-    @Binds
+    @Provides
     @Singleton
-    abstract fun bindAuthRepository(
-        impl: AuthRepositoryImpl
-    ): AuthRepository
+    fun provideAuthRepository(
+        httpClient: HttpClient,
+        sharedAuthPreferences: SharedAuthPreferences
+    ): AuthRepository {
+        return SharedAuthRepositoryImpl(
+            httpClient = httpClient,
+            authPreferencesProvider = { sharedAuthPreferences }
+        )
+    }
 
-    @Binds
+    @Provides
     @Singleton
-    abstract fun bindVendorRepository(
-        impl: com.macdevelopers.composetaskapp.data.repository.VendorRepositoryImpl
-    ): com.macdevelopers.composetaskapp.domain.repository.VendorRepository
+    fun provideVendorRepository(
+        httpClient: HttpClient
+    ): VendorRepository {
+        return VendorRepositoryImpl(httpClient)
+    }
 }

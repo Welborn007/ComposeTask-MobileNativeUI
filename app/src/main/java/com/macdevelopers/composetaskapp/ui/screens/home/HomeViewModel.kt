@@ -4,15 +4,15 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.macdevelopers.composetaskapp.data.local.preferences.AuthPreferences
-import com.macdevelopers.composetaskapp.domain.repository.VendorRepository
+import com.macdevelopers.shared.data.local.SharedAuthPreferences
+import com.macdevelopers.shared.domain.repository.VendorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val authPreferences: AuthPreferences,
+    private val authPreferences: SharedAuthPreferences,
     private val vendorRepository: VendorRepository
 ) : ViewModel() {
 

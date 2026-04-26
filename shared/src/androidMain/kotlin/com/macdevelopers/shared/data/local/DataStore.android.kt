@@ -1,0 +1,15 @@
+package com.macdevelopers.shared.data.local
+
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
+
+actual fun createDataStore(context: Any?): DataStore<Preferences> {
+    require(context is Context) { "Android context is required to create DataStore" }
+    return androidx.datastore.preferences.core.PreferenceDataStoreFactory.create(
+        produceFile = {
+            context.preferencesDataStoreFile(AUTH_DATASTORE_FILENAME)
+        }
+    )
+}

@@ -4,8 +4,8 @@ package com.macdevelopers.composetaskapp.ui.screens.login
 import com.macdevelopers.composetaskapp.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.macdevelopers.composetaskapp.domain.model.NetworkException
-import com.macdevelopers.composetaskapp.domain.usecase.LoginUseCase
+import com.macdevelopers.shared.domain.model.NetworkException
+import com.macdevelopers.shared.domain.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

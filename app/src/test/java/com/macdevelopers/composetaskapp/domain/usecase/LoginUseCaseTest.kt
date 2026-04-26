@@ -1,6 +1,7 @@
 package com.macdevelopers.composetaskapp.domain.usecase
 
-import com.macdevelopers.composetaskapp.domain.repository.AuthRepository
+import com.macdevelopers.shared.domain.repository.AuthRepository
+import com.macdevelopers.shared.domain.usecase.LoginUseCase
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test

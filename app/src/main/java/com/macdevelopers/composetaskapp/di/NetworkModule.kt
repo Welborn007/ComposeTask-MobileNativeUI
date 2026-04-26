@@ -1,21 +1,25 @@
 package com.macdevelopers.composetaskapp.di
 
-import com.macdevelopers.composetaskapp.data.remote.AuthApi
+import com.macdevelopers.shared.data.remote.createHttpClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "http://192.168.0.106:8080/api/"
+    @Provides
+    @Singleton
+    fun provideKtorHttpClient(): HttpClient {
+        return createHttpClient(OkHttp.create())
+    }
 
     @Provides
     @Singleton
@@ -33,34 +37,6 @@ object NetworkModule {
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(
-        okHttpClient: OkHttpClient
-    ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideAuthApi(
-        retrofit: Retrofit
-    ): AuthApi {
-        return retrofit.create(AuthApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideVendorApi(
-        retrofit: Retrofit
-    ): com.macdevelopers.composetaskapp.data.remote.VendorApi {
-        return retrofit.create(com.macdevelopers.composetaskapp.data.remote.VendorApi::class.java)
     }
 }
 

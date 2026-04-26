@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
-import com.macdevelopers.composetaskapp.domain.usecase.IsUserLoggedInUseCase
+import com.macdevelopers.shared.domain.usecase.IsUserLoggedInUseCase
 import com.macdevelopers.composetaskapp.ui.navigation.AppNavGraph
 import com.macdevelopers.composetaskapp.ui.navigation.Screen
 import com.macdevelopers.composetaskapp.ui.theme.ComposeTaskAppTheme
