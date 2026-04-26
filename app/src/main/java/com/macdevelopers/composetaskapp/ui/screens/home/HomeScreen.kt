@@ -33,6 +33,7 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -62,6 +63,9 @@ fun HomeScreen(
         onLogout = {
             viewModel.logout()
             onLogout()
+        },
+        onRefresh = {
+            viewModel.getVendors()
         }
     )
 }
@@ -70,7 +74,8 @@ fun HomeScreen(
 @Composable
 fun HomeScreenContent(
     state: HomeUiState,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onRefresh: () -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -134,14 +139,14 @@ fun HomeScreenContent(
                 )
             }
         ) { paddingValues ->
-            Box(
+            PullToRefreshBox(
+                isRefreshing = state.isLoading,
+                onRefresh = onRefresh,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                if (state.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                } else if (state.error != null) {
+                if (state.error != null && state.vendors.isEmpty()) {
                     AppText(
                         text = state.error,
                         color = MaterialTheme.colorScheme.error,
@@ -284,7 +289,8 @@ fun HomeScreenPreview() {
                     )
                 )
             ),
-            onLogout = {}
+            onLogout = {},
+            onRefresh = {}
         )
     }
 }
