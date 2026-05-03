@@ -16,7 +16,7 @@ import io.ktor.http.contentType
 class AuthRepositoryImpl(
     private val httpClient: HttpClient,
     private val authPreferencesProvider: () -> AuthPreferencesBridge,
-    private val baseUrl: String = "http://192.168.0.106:8080/api/"
+    private val baseUrl: String,
 ) : AuthRepository {
 
     override suspend fun isLoggedIn(): Boolean {

@@ -17,19 +17,28 @@ import org.koin.dsl.module
 
 expect fun platformModule(): Module
 
+private val baseUrl: String = "http://192.168.0.101:8080/api/"
+
 val commonModule = module {
     single<HttpClient> { createHttpClient(get()) }
     
     single { SharedAuthPreferences(get()) }
+
     
     single<AuthRepository> { 
         AuthRepositoryImpl(
             httpClient = get(),
-            authPreferencesProvider = { get<SharedAuthPreferences>() }
-        ) 
+            authPreferencesProvider = { get<SharedAuthPreferences>() },
+            baseUrl = baseUrl
+        )
     }
     
-    single<VendorRepository> { VendorRepositoryImpl(get()) }
+    single<VendorRepository> {
+        VendorRepositoryImpl(
+            httpClient = get(),
+            baseUrl = baseUrl
+        )
+    }
 
     // Use Cases
     factory { LoginUseCase(get()) }

@@ -48,13 +48,13 @@ kotlin {
                 implementation(libs.ktor.client.logging)
                 api(libs.datastore.preferences.core)
                 api(libs.koin.core)
-                api("com.squareup.okio:okio:3.9.0")
+                api(libs.okio)
             }
         }
 
         commonTest {
             dependencies {
-                implementation(libs.jetbrains.kotlin.test)
+                implementation(libs.kotlin.test)
             }
         }
 

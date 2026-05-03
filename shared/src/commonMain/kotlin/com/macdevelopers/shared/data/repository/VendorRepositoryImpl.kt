@@ -10,7 +10,7 @@ import io.ktor.client.request.get
 
 class VendorRepositoryImpl(
     private val httpClient: HttpClient,
-    private val baseUrl: String = "http://192.168.0.106:8080/api/"
+    private val baseUrl: String,
 ) : VendorRepository {
 
     override suspend fun getVendors(): Result<List<VendorDto>> {
