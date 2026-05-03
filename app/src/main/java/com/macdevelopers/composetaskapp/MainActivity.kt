@@ -9,16 +9,12 @@ import com.macdevelopers.shared.domain.usecase.IsUserLoggedInUseCase
 import com.macdevelopers.composetaskapp.ui.navigation.AppNavGraph
 import com.macdevelopers.composetaskapp.ui.navigation.Screen
 import com.macdevelopers.composetaskapp.ui.theme.ComposeTaskAppTheme
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var isUserLoggedIn: IsUserLoggedInUseCase
+    private val isUserLoggedIn: IsUserLoggedInUseCase by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

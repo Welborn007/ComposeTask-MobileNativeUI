@@ -2,8 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt.android)
-    // Note: org.jetbrains.kotlin.android is no longer required for Kotlin support since AGP 9.0
 }
 
 android {
@@ -61,10 +59,9 @@ dependencies {
     // Lifecycle (keep ViewModel, runtime is optional)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
+    // Koin
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
 
     // Networking
     implementation(libs.okhttp)

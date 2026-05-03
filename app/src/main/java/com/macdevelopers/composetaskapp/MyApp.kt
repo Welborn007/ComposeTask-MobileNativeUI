@@ -1,7 +1,18 @@
 package com.macdevelopers.composetaskapp
 
 import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
+import com.macdevelopers.composetaskapp.di.appModule
+import com.macdevelopers.shared.di.initKoin
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
 
-@HiltAndroidApp
-class MyApp : Application()
+class MyApp : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        initKoin {
+            androidLogger()
+            androidContext(this@MyApp)
+            modules(appModule)
+        }
+    }
+}

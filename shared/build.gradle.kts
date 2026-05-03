@@ -8,7 +8,7 @@ plugins {
 kotlin {
     android {
         namespace = "com.macdevelopers.shared"
-        compileSdk = 35
+        compileSdk = 36
         minSdk = 24
 
         compilerOptions {
@@ -46,7 +46,9 @@ kotlin {
                 api(libs.ktor.client.content.negotiation)
                 api(libs.ktor.serialization.kotlinx.json)
                 implementation(libs.ktor.client.logging)
-                api(libs.datastore.preferences)
+                api(libs.datastore.preferences.core)
+                api(libs.koin.core)
+                api("com.squareup.okio:okio:3.9.0")
             }
         }
 
@@ -59,12 +61,15 @@ kotlin {
         androidMain {
             dependencies {
                 api(libs.ktor.client.okhttp)
+                api(libs.koin.android)
+                api(libs.datastore.preferences)
             }
         }
 
         iosMain {
             dependencies {
                 implementation(libs.ktor.client.darwin)
+                api(libs.datastore.preferences)
             }
         }
     }

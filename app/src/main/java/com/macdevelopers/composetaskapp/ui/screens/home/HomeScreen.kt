@@ -45,18 +45,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.macdevelopers.composetaskapp.R
 import com.macdevelopers.shared.data.remote.dto.VendorDto
 import com.macdevelopers.composetaskapp.ui.components.AppCard
 import com.macdevelopers.composetaskapp.ui.components.AppText
 import com.macdevelopers.composetaskapp.ui.theme.ComposeTaskAppTheme
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
     onLogout: () -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = koinViewModel()
 ) {
     HomeScreenContent(
         state = viewModel.state.value,

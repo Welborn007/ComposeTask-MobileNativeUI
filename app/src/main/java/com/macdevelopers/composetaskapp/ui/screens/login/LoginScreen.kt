@@ -26,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.macdevelopers.composetaskapp.R
 import com.macdevelopers.composetaskapp.ui.components.AppButton
@@ -44,11 +43,12 @@ import com.macdevelopers.composetaskapp.ui.theme.LoginTextSecondary
 import androidx.compose.ui.text.font.FontWeight
 import com.macdevelopers.composetaskapp.ui.components.AppTextField
 import com.macdevelopers.composetaskapp.ui.theme.LoginTextPrimary
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = hiltViewModel(),
+    viewModel: LoginViewModel = koinViewModel(),
     onLoginSuccess: () -> Unit,
     onCreateAccountClick: () -> Unit,
     onResetClick: () -> Unit

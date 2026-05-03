@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.font.FontWeight
@@ -42,10 +41,11 @@ import com.macdevelopers.composetaskapp.ui.theme.LoginEmailYellow
 import com.macdevelopers.composetaskapp.ui.theme.LoginPasswordWhite
 import com.macdevelopers.composetaskapp.ui.theme.LoginTextSecondary
 import com.macdevelopers.composetaskapp.ui.theme.LoginTextPrimary
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SignupScreen(
-    viewModel: SignupViewModel = hiltViewModel(),
+    viewModel: SignupViewModel = koinViewModel(),
     onSignupSuccess: () -> Unit,
     onLoginClick: () -> Unit
 ) {

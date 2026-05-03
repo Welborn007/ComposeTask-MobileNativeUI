@@ -6,12 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.macdevelopers.shared.data.local.SharedAuthPreferences
 import com.macdevelopers.shared.domain.repository.VendorRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
     private val authPreferences: SharedAuthPreferences,
     private val vendorRepository: VendorRepository
 ) : ViewModel() {
