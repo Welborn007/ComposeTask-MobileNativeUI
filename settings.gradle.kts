@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "ComposeTaskApp"
 include(":app")
 include(":shared")
+include(":my_agent")
