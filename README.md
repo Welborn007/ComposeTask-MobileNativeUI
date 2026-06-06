@@ -1,82 +1,65 @@
-# ComposeTaskApp
+# ComposeTaskApp (KMP)
 
-A modern Android application built with Jetpack Compose, following clean architecture principles and best practices.
+A modern Kotlin Multiplatform (KMP) application targeting **Android** and **iOS**, built with Jetpack Compose (Android) and shared business logic. The project follows Clean Architecture principles and modern best practices.
 
 ## Tech Stack
 
-### Core Android
-- **Android Gradle Plugin (AGP)**: 9.1.0
+### Multiplatform Core
 - **Kotlin**: 2.3.20
+- **Kotlin Multiplatform (KMP)**: Targetting Android & iOS
+- **Kotlinx Coroutines**: 1.7.3
+- **Kotlinx Serialization**: 1.11.0
+
+### Dependency Injection
+- **Koin**: 4.0.0 (Shared DI across Android & iOS)
+- **Koin Android**: 4.0.0
+- **Koin Compose**: 4.0.0
+
+### Networking (Shared)
+- **Ktor**: 3.4.3
+- **Engines**: OkHttp (Android), Darwin (iOS)
+- **Content Negotiation**: Kotlinx Serialization (JSON)
+- **Logging**: Ktor Logging Plugin
+
+### Local Database & Persistence (Shared)
+- **Room KMP**: 2.7.0+ (Multiplatform database logic)
+- **DataStore Preferences**: 1.1.1 (Multiplatform settings)
+- **Okio**: 3.9.0 (File system access for iOS)
+
+### Android UI
+- **Jetpack Compose**: 2026.03.01 (BOM)
+- **Material 3**: Latest from BOM
+- **Navigation Compose**: 2.9.7
+- **Lifecycle**: 2.10.0
+
+### Project Configuration
+- **Android Gradle Plugin (AGP)**: 9.1.0
+- **KSP (Kotlin Symbol Processing)**: 2.3.2
 - **Java Target**: 17
 - **Min SDK**: 24
 - **Target SDK**: 36
-- **Compile SDK**: 36
-
-### UI & Jetpack Compose
-- **Jetpack Compose**: 2026.03.01 (BOM)
-- **Material 3**: Latest from BOM
-- **Compose UI Tooling**: Latest from BOM
-- **Activity Compose**: 1.13.0
-- **Material Icons Extended**: Latest from BOM
-
-### Navigation
-- **Navigation Compose**: 2.9.7
-
-### Dependency Injection
-- **Hilt Android**: 2.59.2
-- **Hilt Navigation Compose**: 1.3.0
-
-### State Management & Lifecycle
-- **ViewModel**: Built-in with Compose
-- **Lifecycle**: 2.10.0
-- **Core KTX**: 1.18.0
-
-### Local Database
-- **Room**: 2.8.4
-  - Room Runtime
-  - Room KTX
-  - Room Compiler (KSP)
-
-### Data Persistence
-- **DataStore Preferences**: 1.2.1
-
-### Networking
-- **Retrofit**: 3.0.0
-- **Retrofit Gson Converter**: 3.0.0
-- **OkHttp**: 5.3.2
-- **OkHttp Logging Interceptor**: 5.3.2
-
-### Code Generation
-- **KSP (Kotlin Symbol Processing)**: 2.3.2
-- **Kotlin Compose Plugin**: 2.3.20
-
-### Testing
-- **JUnit**: 4.13.2
 
 ## Architecture
 
-- **Clean Architecture** with MVVM pattern
-- **Jetpack Compose** for declarative UI
-- **Hilt** for dependency injection
-- **Room** for local data persistence
-- **Retrofit** for remote API calls
-- **Flow/StateFlow** for reactive data streams
+- **Clean Architecture** with a shared `domain` and `data` layer.
+- **MVVM Pattern**: ViewModels in the Android app (moving towards shared ViewModels).
+- **Dependency Injection**: Koin provides singletons and factories across platform boundaries.
+- **Repository Pattern**: Abstracted data sources for remote (Ktor) and local (Room/DataStore) storage.
+- **Flow/StateFlow**: Reactive data streams for state management.
 
-## Build Configuration
+## Project Structure
 
-- **Build Tool Version**: 36.0.0
-- **AGP 9.0+ Features**:
-  - Built-in Kotlin support (no separate kotlin-android plugin needed)
-  - KSP for annotation processing (migrated from KAPT)
-  - Modern source set management via `android.sourceSets`
+- **`:app`**: Android application module (Jetpack Compose).
+- **`:shared`**: Kotlin Multiplatform module containing shared business logic, networking, and data persistence.
+    - `commonMain`: Shared code across all platforms.
+    - `androidMain`: Android-specific implementations (e.g., Ktor OkHttp engine).
+    - `iosMain`: iOS-specific implementations (e.g., Ktor Darwin engine, DataStore path configuration).
 
 ## Features
 
-- User authentication (Login/Splash screen)
-- Task management
-- Modern Material Design 3 UI
-- Responsive Compose layouts
-- Secure local data storage with Room
-- Network requests with Retrofit
-- Dependency injection with Hilt
-
+- **Cross-Platform Logic**: 100% shared Networking, Database, and Domain logic.
+- **User Authentication**: Login/Signup flow with secure token storage.
+- **Task Management**: Core business logic shared between platforms.
+- **Modern UI**: Material Design 3 and responsive layouts.
+- **Type-Safe API**: Kotlinx Serialization for robust data parsing.
+- **Centralized DI**: Single source of truth for dependencies via Koin.

@@ -49,17 +49,22 @@ import com.macdevelopers.composetaskapp.R
 import com.macdevelopers.shared.data.remote.dto.VendorDto
 import com.macdevelopers.composetaskapp.ui.components.AppCard
 import com.macdevelopers.composetaskapp.ui.components.AppText
+import com.macdevelopers.composetaskapp.ui.components.NetworkErrorBanner
 import com.macdevelopers.composetaskapp.ui.theme.ComposeTaskAppTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun HomeScreen(
     onLogout: () -> Unit,
     viewModel: HomeViewModel = koinViewModel()
 ) {
+    val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
+
     HomeScreenContent(
         state = viewModel.state.value,
+        isConnected = isConnected,
         onLogout = {
             viewModel.logout()
             onLogout()
@@ -74,6 +79,7 @@ fun HomeScreen(
 @Composable
 fun HomeScreenContent(
     state: HomeUiState,
+    isConnected: Boolean,
     onLogout: () -> Unit,
     onRefresh: () -> Unit
 ) {
@@ -139,23 +145,29 @@ fun HomeScreenContent(
                 )
             }
         ) { paddingValues ->
-            PullToRefreshBox(
-                isRefreshing = state.isLoading,
-                onRefresh = onRefresh,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                if (state.error != null && state.vendors.isEmpty()) {
-                    AppText(
-                        text = state.error,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(16.dp)
-                    )
-                } else {
-                    VendorList(vendors = state.vendors)
+            Column(modifier = Modifier.padding(paddingValues)) {
+                NetworkErrorBanner(
+                    message = stringResource(R.string.error_no_internet),
+                    isVisible = !isConnected,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                PullToRefreshBox(
+                    isRefreshing = state.isLoading,
+                    onRefresh = onRefresh,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    if (state.error != null && state.vendors.isEmpty()) {
+                        AppText(
+                            text = state.error,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .padding(16.dp)
+                        )
+                    } else {
+                        VendorList(vendors = state.vendors)
+                    }
                 }
             }
         }

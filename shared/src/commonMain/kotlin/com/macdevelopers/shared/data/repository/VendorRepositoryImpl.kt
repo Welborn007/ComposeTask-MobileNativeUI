@@ -1,5 +1,8 @@
 package com.macdevelopers.shared.data.repository
 
+import com.macdevelopers.shared.data.local.dao.VendorDao
+import com.macdevelopers.shared.data.local.entity.toDto
+import com.macdevelopers.shared.data.local.entity.toEntity
 import com.macdevelopers.shared.data.remote.dto.ApiResponseDto
 import com.macdevelopers.shared.data.remote.dto.PaginatedResponseDto
 import com.macdevelopers.shared.data.remote.dto.VendorDto
@@ -10,6 +13,7 @@ import io.ktor.client.request.get
 
 class VendorRepositoryImpl(
     private val httpClient: HttpClient,
+    private val vendorDao: VendorDao,
     private val baseUrl: String,
 ) : VendorRepository {
 
@@ -19,12 +23,28 @@ class VendorRepositoryImpl(
                 httpClient.get("${baseUrl}vendors").body()
             
             if (response.success && response.data != null) {
-                Result.success(response.data.content)
+                val vendors = response.data.content
+                // Save to local cache
+                vendorDao.deleteAllVendors()
+                vendorDao.insertVendors(vendors.map { it.toEntity() })
+                Result.success(vendors)
             } else {
-                Result.failure(Exception(response.message))
+                // If API call fails but we have cached data, return cached data
+                val cachedVendors = vendorDao.getAllVendors()
+                if (cachedVendors.isNotEmpty()) {
+                    Result.success(cachedVendors.map { it.toDto() })
+                } else {
+                    Result.failure(Exception(response.message))
+                }
             }
         } catch (e: Exception) {
-            Result.failure(e)
+            // In case of network error, return cached data
+            val cachedVendors = vendorDao.getAllVendors()
+            if (cachedVendors.isNotEmpty()) {
+                Result.success(cachedVendors.map { it.toDto() })
+            } else {
+                Result.failure(e)
+            }
         }
     }
 }

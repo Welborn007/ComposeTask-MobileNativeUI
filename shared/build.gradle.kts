@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.android.lint)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.androidx.room)
 }
 
 kotlin {
@@ -49,6 +51,10 @@ kotlin {
                 api(libs.datastore.preferences.core)
                 api(libs.koin.core)
                 api(libs.okio)
+                
+                // Room
+                api(libs.room.runtime)
+                api(libs.sqlite.bundled)
             }
         }
 
@@ -73,4 +79,15 @@ kotlin {
             }
         }
     }
+}
+
+dependencies {
+    add("kspAndroid", libs.room.compiler)
+    add("kspIosX64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
