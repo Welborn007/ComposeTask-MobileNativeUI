@@ -1,8 +1,8 @@
 package com.macdevelopers.shared.di
 
 import com.macdevelopers.shared.data.local.SharedAuthPreferences
-import com.macdevelopers.shared.data.local.createDataStore
 import com.macdevelopers.shared.data.local.db.AppDatabase
+import com.macdevelopers.shared.data.remote.ApiService
 import com.macdevelopers.shared.data.remote.createHttpClient
 import com.macdevelopers.shared.data.repository.AuthRepositoryImpl
 import com.macdevelopers.shared.data.repository.VendorRepositoryImpl
@@ -12,7 +12,6 @@ import com.macdevelopers.shared.domain.usecase.IsUserLoggedInUseCase
 import com.macdevelopers.shared.domain.usecase.LoginUseCase
 import com.macdevelopers.shared.domain.usecase.SignupUseCase
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.HttpClientEngine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import org.koin.core.module.Module
@@ -22,7 +21,7 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 
 expect fun platformModule(): Module
 
-private val baseUrl: String = "http://192.168.0.101:8080/api/"
+private val baseUrl: String = "https://composetask-javaspringbootbackend.onrender.com/api/"
 
 val commonModule = module {
     single<HttpClient> { createHttpClient(get()) }
@@ -38,19 +37,20 @@ val commonModule = module {
 
     single { get<AppDatabase>().vendorDao() }
     
-    single<AuthRepository> { 
+    // API Service - centralized API management
+    single { ApiService(get(), baseUrl) }
+
+    single<AuthRepository> {
         AuthRepositoryImpl(
-            httpClient = get(),
-            authPreferencesProvider = { get<SharedAuthPreferences>() },
-            baseUrl = baseUrl
+            apiService = get(),
+            authPreferencesProvider = { get<SharedAuthPreferences>() }
         )
     }
     
     single<VendorRepository> {
         VendorRepositoryImpl(
-            httpClient = get(),
-            vendorDao = get(),
-            baseUrl = baseUrl
+            apiService = get(),
+            vendorDao = get()
         )
     }
 

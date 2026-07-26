@@ -1,0 +1,53 @@
+package com.macdevelopers.shared.data.remote
+
+import com.macdevelopers.shared.data.remote.dto.ApiResponseDto
+import com.macdevelopers.shared.data.remote.dto.LoginRequestDto
+import com.macdevelopers.shared.data.remote.dto.LoginResponseDto
+import com.macdevelopers.shared.data.remote.dto.PaginatedResponseDto
+import com.macdevelopers.shared.data.remote.dto.SignupRequestDto
+import com.macdevelopers.shared.data.remote.dto.SignupResponseDto
+import com.macdevelopers.shared.data.remote.dto.VendorDto
+import com.macdevelopers.shared.domain.model.UserRole
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+
+class ApiService(
+    private val httpClient: HttpClient,
+    private val baseUrl: String,
+) {
+
+    /**
+     * Authentication APIs
+     */
+    suspend fun login(email: String, password: String): ApiResponseDto<LoginResponseDto> {
+        return httpClient.post("${baseUrl}auth/login") {
+            contentType(ContentType.Application.Json)
+            setBody(LoginRequestDto(email, password))
+        }.body()
+    }
+
+    suspend fun signup(
+        name: String,
+        email: String,
+        password: String,
+        role: UserRole
+    ): ApiResponseDto<SignupResponseDto> {
+        return httpClient.post("${baseUrl}auth/signup") {
+            contentType(ContentType.Application.Json)
+            setBody(SignupRequestDto(name, email, password, role))
+        }.body()
+    }
+
+    /**
+     * Vendor APIs
+     */
+    suspend fun getVendors(): ApiResponseDto<PaginatedResponseDto<VendorDto>> {
+        return httpClient.get("${baseUrl}vendors").body()
+    }
+}
+

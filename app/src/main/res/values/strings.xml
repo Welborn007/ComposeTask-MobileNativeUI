@@ -38,6 +38,10 @@
 
     <string name="label_signup_button">Sign Up</string>
 
+    <string name="label_signup_account_type">I want to join as</string>
+    <string name="label_customer">Customer</string>
+    <string name="label_vendor">Vendor</string>
+
     <!-- Home Screen -->
     <string name="menu_logout">Logout</string>
     <string name="menu_home">Home</string>

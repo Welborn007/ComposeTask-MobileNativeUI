@@ -4,6 +4,7 @@ import com.macdevelopers.composetaskapp.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.macdevelopers.shared.domain.model.NetworkException
+import com.macdevelopers.shared.domain.model.UserRole
 import com.macdevelopers.shared.domain.usecase.SignupUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +25,14 @@ class SignupViewModel(
             it.copy(
                 name = name,
                 nameErrorRes = null
+            )
+        }
+    }
+
+    fun onRoleChanged(role: UserRole) {
+        _uiState.update {
+            it.copy(
+                role = role
             )
         }
     }
@@ -71,7 +80,8 @@ class SignupViewModel(
             val result = signupUseCase(
                 name = state.name,
                 email = state.email,
-                password = state.password
+                password = state.password,
+                role = state.role
             )
 
             result

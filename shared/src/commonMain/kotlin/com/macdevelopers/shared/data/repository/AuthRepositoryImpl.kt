@@ -1,22 +1,12 @@
 package com.macdevelopers.shared.data.repository
 
-import com.macdevelopers.shared.data.remote.dto.ApiResponseDto
-import com.macdevelopers.shared.data.remote.dto.LoginRequestDto
-import com.macdevelopers.shared.data.remote.dto.LoginResponseDto
-import com.macdevelopers.shared.data.remote.dto.SignupRequestDto
-import com.macdevelopers.shared.data.remote.dto.SignupResponseDto
+import com.macdevelopers.shared.data.remote.ApiService
+import com.macdevelopers.shared.domain.model.UserRole
 import com.macdevelopers.shared.domain.repository.AuthRepository
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 
 class AuthRepositoryImpl(
-    private val httpClient: HttpClient,
+    private val apiService: ApiService,
     private val authPreferencesProvider: () -> AuthPreferencesBridge,
-    private val baseUrl: String,
 ) : AuthRepository {
 
     override suspend fun isLoggedIn(): Boolean {
@@ -28,10 +18,7 @@ class AuthRepositoryImpl(
         password: String
     ): Result<String> {
         return try {
-            val response: ApiResponseDto<LoginResponseDto> = httpClient.post("${baseUrl}auth/login") {
-                contentType(ContentType.Application.Json)
-                setBody(LoginRequestDto(email, password))
-            }.body()
+            val response = apiService.login(email, password)
 
             if (response.success && response.data != null) {
                 val token = response.data.token
@@ -49,13 +36,11 @@ class AuthRepositoryImpl(
     override suspend fun signup(
         name: String,
         email: String,
-        password: String
+        password: String,
+        role: UserRole
     ): Result<String> {
         return try {
-            val response: ApiResponseDto<SignupResponseDto> = httpClient.post("${baseUrl}auth/signup") {
-                contentType(ContentType.Application.Json)
-                setBody(SignupRequestDto(name, email, password))
-            }.body()
+            val response = apiService.signup(name, email, password, role)
 
             if (response.success && response.data != null) {
                 val token = response.data.token

@@ -36,12 +36,21 @@ import com.macdevelopers.composetaskapp.ui.components.NetworkErrorBanner
 import com.macdevelopers.composetaskapp.ui.theme.BackgroundWhite
 import com.macdevelopers.composetaskapp.ui.theme.ComposeTaskAppTheme
 import com.macdevelopers.composetaskapp.ui.theme.Dimens
-import com.macdevelopers.composetaskapp.ui.theme.LoginClickable
 import com.macdevelopers.composetaskapp.ui.theme.LoginEmailYellow
 import com.macdevelopers.composetaskapp.ui.theme.LoginPasswordWhite
 import com.macdevelopers.composetaskapp.ui.theme.LoginTextSecondary
 import com.macdevelopers.composetaskapp.ui.theme.LoginTextPrimary
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.material.icons.filled.Business
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Text
+import androidx.compose.ui.unit.dp
+import com.macdevelopers.shared.domain.model.UserRole
 
 @Composable
 fun SignupScreen(
@@ -64,7 +73,8 @@ fun SignupScreen(
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
         onSignupClick = viewModel::onSignupClicked,
-        onLoginClick = onLoginClick
+        onLoginClick = onLoginClick,
+        onRoleChanged = viewModel::onRoleChanged
     )
 }
 
@@ -75,7 +85,8 @@ fun SignupScreenBody(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onSignupClick: () -> Unit,
-    onLoginClick: () -> Unit
+    onLoginClick: () -> Unit,
+    onRoleChanged: (UserRole) -> Unit
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
     var showNetworkError by remember { mutableStateOf(state.networkError) }
@@ -121,6 +132,13 @@ fun SignupScreenBody(
                         Spacer(modifier = Modifier.width(Dimens.SmallSpacing))
                         AppText(text = stringResource(R.string.label_signup_login), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = LoginTextPrimary, onClick = onLoginClick)
                     }
+
+                    Spacer(modifier = Modifier.height(Dimens.SectionSpacing))
+
+                    RoleSelector(
+                        selectedRole = state.role,
+                        onRoleSelected = onRoleChanged
+                    )
 
                     Spacer(modifier = Modifier.height(Dimens.SectionSpacing))
 
@@ -191,6 +209,48 @@ fun SignupScreenBody(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RoleSelector(
+    selectedRole: UserRole,
+    onRoleSelected: (UserRole) -> Unit
+) {
+    Text(
+        text = stringResource(R.string.label_signup_account_type),
+        style = MaterialTheme.typography.titleMedium
+    )
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    SingleChoiceSegmentedButtonRow(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        SegmentedButton(
+            selected = selectedRole == UserRole.CUSTOMER,
+            onClick = { onRoleSelected(UserRole.CUSTOMER) },
+            shape = SegmentedButtonDefaults.itemShape(
+                index = 0,
+                count = 2
+            ),
+            icon = {}
+        ) {
+            Text(stringResource(R.string.label_customer))
+        }
+
+        SegmentedButton(
+            selected = selectedRole == UserRole.VENDOR,
+            onClick = { onRoleSelected(UserRole.VENDOR) },
+            shape = SegmentedButtonDefaults.itemShape(
+                index = 1,
+                count = 2
+            ),
+            icon = {}
+        ) {
+            Text(stringResource(R.string.label_vendor))
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun SignupScreenBodyPreview() {
@@ -205,7 +265,8 @@ fun SignupScreenBodyPreview() {
             onEmailChange = {},
             onPasswordChange = {},
             onSignupClick = {},
-            onLoginClick = {}
+            onLoginClick = {},
+            onRoleChanged = {}
         )
     }
 }

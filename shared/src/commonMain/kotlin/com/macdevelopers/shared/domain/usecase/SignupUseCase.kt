@@ -1,5 +1,6 @@
 package com.macdevelopers.shared.domain.usecase
 
+import com.macdevelopers.shared.domain.model.UserRole
 import com.macdevelopers.shared.domain.repository.AuthRepository
 
 class SignupUseCase(
@@ -8,12 +9,14 @@ class SignupUseCase(
     suspend operator fun invoke(
         name: String,
         email: String,
-        password: String
+        password: String,
+        role: UserRole
     ): Result<String> {
         return repository.signup(
             name = name,
             email = email,
-            password = password
+            password = password,
+            role = role
         )
     }
 }
