@@ -4,6 +4,8 @@ import com.macdevelopers.shared.data.remote.dto.ApiResponseDto
 import com.macdevelopers.shared.data.remote.dto.LoginRequestDto
 import com.macdevelopers.shared.data.remote.dto.LoginResponseDto
 import com.macdevelopers.shared.data.remote.dto.PaginatedResponseDto
+import com.macdevelopers.shared.data.remote.dto.RefreshTokenRequestDto
+import com.macdevelopers.shared.data.remote.dto.RefreshTokenResponseDto
 import com.macdevelopers.shared.data.remote.dto.SignupRequestDto
 import com.macdevelopers.shared.data.remote.dto.SignupResponseDto
 import com.macdevelopers.shared.data.remote.dto.VendorDto
@@ -40,6 +42,13 @@ class ApiService(
         return httpClient.post("${baseUrl}auth/signup") {
             contentType(ContentType.Application.Json)
             setBody(SignupRequestDto(name, email, password, role))
+        }.body()
+    }
+
+    suspend fun refreshToken(refreshToken: String): ApiResponseDto<RefreshTokenResponseDto> {
+        return httpClient.post("${baseUrl}auth/refresh") {
+            contentType(ContentType.Application.Json)
+            setBody(RefreshTokenRequestDto(refreshToken))
         }.body()
     }
 

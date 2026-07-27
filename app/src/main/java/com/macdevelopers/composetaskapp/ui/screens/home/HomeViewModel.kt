@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.macdevelopers.shared.data.local.SharedAuthPreferences
+import com.macdevelopers.shared.domain.repository.AuthRepository
 import com.macdevelopers.shared.domain.repository.VendorRepository
 import com.macdevelopers.shared.util.NetworkObserver
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val authPreferences: SharedAuthPreferences,
+    private val authRepository: AuthRepository,
     private val vendorRepository: VendorRepository,
     networkObserver: NetworkObserver
 ) : ViewModel() {
@@ -49,8 +49,7 @@ class HomeViewModel(
 
     fun logout() {
         viewModelScope.launch {
-            authPreferences.clearToken()
-            authPreferences.clearAll()
+            authRepository.logout()
         }
     }
 }

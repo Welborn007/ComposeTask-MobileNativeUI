@@ -4,6 +4,7 @@ import com.macdevelopers.shared.data.local.SharedAuthPreferences
 import com.macdevelopers.shared.data.local.db.AppDatabase
 import com.macdevelopers.shared.data.remote.ApiService
 import com.macdevelopers.shared.data.remote.createHttpClient
+import com.macdevelopers.shared.data.remote.createTokenRefreshPlugin
 import com.macdevelopers.shared.data.repository.AuthRepositoryImpl
 import com.macdevelopers.shared.data.repository.VendorRepositoryImpl
 import com.macdevelopers.shared.domain.repository.AuthRepository
@@ -24,7 +25,14 @@ expect fun platformModule(): Module
 private val baseUrl: String = "https://composetask-javaspringbootbackend.onrender.com/api/"
 
 val commonModule = module {
-    single<HttpClient> { createHttpClient(get()) }
+    single<HttpClient> { 
+        createHttpClient(get()) {
+            install(createTokenRefreshPlugin(
+                authPreferences = get(),
+                apiServiceProvider = { get<ApiService>() }
+            ))
+        }
+    }
     
     single { SharedAuthPreferences(get()) }
 
@@ -36,20 +44,22 @@ val commonModule = module {
     }
 
     single { get<AppDatabase>().vendorDao() }
-    
+
     // API Service - centralized API management
-    single { ApiService(get(), baseUrl) }
+    single<ApiService> {
+        ApiService(get(), baseUrl)
+    }
 
     single<AuthRepository> {
         AuthRepositoryImpl(
-            apiService = get(),
+            apiService = get<ApiService>(),
             authPreferencesProvider = { get<SharedAuthPreferences>() }
         )
     }
     
     single<VendorRepository> {
         VendorRepositoryImpl(
-            apiService = get(),
+            apiService = get<ApiService>(),
             vendorDao = get()
         )
     }

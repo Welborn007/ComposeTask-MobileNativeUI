@@ -6,6 +6,14 @@ class IsUserLoggedInUseCase(
     private val repository: AuthRepository
 ) {
     suspend operator fun invoke(): Boolean {
-        return repository.isLoggedIn()
+        if (!repository.isLoggedIn()) return false
+        
+        return repository.ensureTokenFresh().fold(
+            onSuccess = { true },
+            onFailure = {
+                repository.logout()
+                false
+            }
+        )
     }
 }

@@ -14,4 +14,7 @@ interface AuthRepository {
         password: String,
         role: UserRole
     ): Result<String>
+    suspend fun refreshToken(): Result<String>
+    suspend fun ensureTokenFresh(): Result<Unit>
+    suspend fun logout()
 }
