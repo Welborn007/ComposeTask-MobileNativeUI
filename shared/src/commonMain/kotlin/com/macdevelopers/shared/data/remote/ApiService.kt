@@ -3,6 +3,7 @@ package com.macdevelopers.shared.data.remote
 import com.macdevelopers.shared.data.remote.dto.ApiResponseDto
 import com.macdevelopers.shared.data.remote.dto.LoginRequestDto
 import com.macdevelopers.shared.data.remote.dto.LoginResponseDto
+import com.macdevelopers.shared.data.remote.dto.LogoutRequestDto
 import com.macdevelopers.shared.data.remote.dto.PaginatedResponseDto
 import com.macdevelopers.shared.data.remote.dto.RefreshTokenRequestDto
 import com.macdevelopers.shared.data.remote.dto.RefreshTokenResponseDto
@@ -49,6 +50,13 @@ class ApiService(
         return httpClient.post("${baseUrl}auth/refresh") {
             contentType(ContentType.Application.Json)
             setBody(RefreshTokenRequestDto(refreshToken))
+        }.body()
+    }
+
+    suspend fun logout(refreshToken: String): ApiResponseDto<Unit> {
+        return httpClient.post("${baseUrl}auth/logout") {
+            contentType(ContentType.Application.Json)
+            setBody(LogoutRequestDto(refreshToken))
         }.body()
     }
 

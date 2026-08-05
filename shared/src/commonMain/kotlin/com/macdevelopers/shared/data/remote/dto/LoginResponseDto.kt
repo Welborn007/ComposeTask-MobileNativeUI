@@ -7,6 +7,6 @@ data class LoginResponseDto(
     val token: String,
     val message: String,
     val refreshToken: String,
-    val expiresIn: String,
+    val expiresIn: Int,
     val tokenType: String
 )

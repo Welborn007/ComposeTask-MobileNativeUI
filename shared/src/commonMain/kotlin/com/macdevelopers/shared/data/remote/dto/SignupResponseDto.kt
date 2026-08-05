@@ -5,5 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SignupResponseDto(
     val token: String,
-    val message: String
+    val message: String,
+    val refreshToken: String,
+    val expiresIn: Int,
 )

@@ -24,7 +24,7 @@ class AuthRepositoryImpl(
             if (response.success && response.data != null) {
                 val token = response.data.token
                 val refreshToken = response.data.refreshToken
-                val expiresIn = response.data.expiresIn.toIntOrNull() ?: 3600
+                val expiresIn = response.data.expiresIn
 
                 authPreferencesProvider().saveToken(token)
                 authPreferencesProvider().saveRefreshToken(refreshToken)
@@ -54,7 +54,16 @@ class AuthRepositoryImpl(
 
             if (response.success && response.data != null) {
                 val token = response.data.token
+                val refreshToken = response.data.refreshToken
+                val expiresIn = response.data.expiresIn
+
                 authPreferencesProvider().saveToken(token)
+                authPreferencesProvider().saveRefreshToken(refreshToken)
+
+                // Calculate expiry time
+                val expiryTimeMillis = getCurrentTimeMillis() + (expiresIn * 1000L)
+                authPreferencesProvider().saveTokenExpiryTime(expiryTimeMillis)
+
                 authPreferencesProvider().setLoggedIn(true)
                 Result.success(token)
             } else {
@@ -94,6 +103,14 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun logout() {
+        try {
+            val refreshToken = authPreferencesProvider().getRefreshTokenValue()
+            if (refreshToken != null) {
+                apiService.logout(refreshToken)
+            }
+        } catch (e: Exception) {
+            // Log error but proceed with local logout anyway
+        }
         authPreferencesProvider().clearAll()
     }
 

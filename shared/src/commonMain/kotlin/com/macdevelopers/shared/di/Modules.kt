@@ -22,7 +22,8 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 
 expect fun platformModule(): Module
 
-private val baseUrl: String = "https://composetask-javaspringbootbackend.onrender.com/api/"
+//private val baseUrl: String = "https://composetask-javaspringbootbackend.onrender.com/api/"
+private val baseUrl: String = "http://192.168.0.107:8080/api/"
 
 val commonModule = module {
     single<HttpClient> { 
