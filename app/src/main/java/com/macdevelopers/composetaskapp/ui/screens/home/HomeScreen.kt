@@ -1,5 +1,8 @@
 package com.macdevelopers.composetaskapp.ui.screens.home
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.CheckCircle
@@ -20,7 +24,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -177,99 +181,228 @@ fun HomeScreenContent(
 
 @Composable
 fun VendorList(vendors: List<VendorDto>) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp)
-    ) {
-        item {
-            AppText(
-                text = stringResource(id = R.string.label_available_vendors),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-        }
-        items(vendors) { vendor ->
-            VendorItem(vendor = vendor)
-            Spacer(modifier = Modifier.height(12.dp))
-        }
-    }
-}
+     if (vendors.isEmpty()) {
+         Box(
+             modifier = Modifier.fillMaxSize(),
+             contentAlignment = Alignment.Center
+         ) {
+             AppText(
+                 text = "No vendors available",
+                 style = MaterialTheme.typography.bodyLarge,
+                 color = MaterialTheme.colorScheme.onSurfaceVariant
+             )
+         }
+     } else {
+         LazyColumn(
+             modifier = Modifier.fillMaxSize(),
+             contentPadding = PaddingValues(16.dp),
+             verticalArrangement = Arrangement.spacedBy(12.dp)
+         ) {
+             item {
+                 Column {
+                     AppText(
+                         text = stringResource(id = R.string.label_available_vendors),
+                         style = MaterialTheme.typography.headlineSmall,
+                         fontWeight = FontWeight.Bold
+                     )
+                     AppText(
+                         text = "${vendors.size} vendor${if (vendors.size != 1) "s" else ""} available",
+                         style = MaterialTheme.typography.bodySmall,
+                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                         modifier = Modifier.padding(top = 4.dp)
+                     )
+                 }
+             }
+             items(vendors) { vendor ->
+                 VendorItem(vendor = vendor)
+             }
+         }
+     }
+ }
 
 @Composable
 fun VendorItem(vendor: VendorDto) {
-    AppCard(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                AppText(
-                    text = vendor.businessName,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f)
-                )
-                if (vendor.verified) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = stringResource(id = R.string.cd_verified),
-                        tint = Color(0xFF4CAF50),
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
+     AppCard(
+         modifier = Modifier
+             .fillMaxWidth()
+             .clickable { /* Handle vendor click */ }
+     ) {
+         Column(
+             modifier = Modifier.padding(16.dp)
+         ) {
+             // Header Row: Business Name and Verification Badge
+             Row(
+                 verticalAlignment = Alignment.CenterVertically,
+                 modifier = Modifier.fillMaxWidth()
+             ) {
+                 AppText(
+                     text = vendor.businessName,
+                     style = MaterialTheme.typography.titleLarge,
+                     fontWeight = FontWeight.Bold,
+                     modifier = Modifier.weight(1f)
+                 )
+                 if (vendor.verified) {
+                     VerificationBadge()
+                 }
+             }
 
-            vendor.category?.let {
-                AppText(
-                    text = it,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.padding(vertical = 4.dp)
-                )
-            }
+             Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(8.dp))
+             // Category and Rating Row
+             Row(
+                 modifier = Modifier.fillMaxWidth(),
+                 horizontalArrangement = Arrangement.SpaceBetween,
+                 verticalAlignment = Alignment.CenterVertically
+             ) {
+                 vendor.category?.let {
+                     CategoryChip(category = it)
+                 }
+                 RatingBadge(
+                     rating = vendor.averageRating ?: 0.0,
+                     reviewCount = vendor.totalReviews ?: 0
+                 )
+             }
 
-            vendor.description?.let {
-                AppText(
-                    text = it,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+             Spacer(modifier = Modifier.height(12.dp))
 
-            Spacer(modifier = Modifier.height(12.dp))
+             // Description
+             vendor.description?.let {
+                 AppText(
+                     text = it,
+                     style = MaterialTheme.typography.bodyMedium,
+                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                     maxLines = 2,
+                     modifier = Modifier.fillMaxWidth()
+                 )
+             }
 
-            InfoRow(icon = Icons.Default.LocationOn, text = vendor.location ?: stringResource(id = R.string.label_not_available))
-            InfoRow(icon = Icons.Default.Info, text = stringResource(id = R.string.label_gst, vendor.gstNumber ?: stringResource(id = R.string.label_not_available)))
-        }
-    }
-}
+             Spacer(modifier = Modifier.height(12.dp))
+
+             // Info Section
+             Column(
+                 modifier = Modifier.fillMaxWidth(),
+                 verticalArrangement = Arrangement.spacedBy(8.dp)
+             ) {
+                 InfoRow(
+                     icon = Icons.Default.LocationOn,
+                     text = vendor.location ?: stringResource(id = R.string.label_not_available),
+                     isHighlight = true
+                 )
+                 InfoRow(
+                     icon = Icons.Default.Info,
+                     text = stringResource(id = R.string.label_gst, vendor.gstNumber ?: stringResource(id = R.string.label_not_available))
+                 )
+             }
+         }
+     }
+ }
 
 @Composable
-fun InfoRow(icon: ImageVector, text: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 2.dp)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier.size(16.dp),
-            tint = MaterialTheme.colorScheme.outline
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        AppText(
-            text = text,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
+fun InfoRow(icon: ImageVector, text: String, isHighlight: Boolean = false) {
+     Row(
+         verticalAlignment = Alignment.CenterVertically,
+         modifier = Modifier
+             .fillMaxWidth()
+             .padding(vertical = 2.dp)
+     ) {
+         Icon(
+             imageVector = icon,
+             contentDescription = null,
+             modifier = Modifier.size(16.dp),
+             tint = if (isHighlight) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+         )
+         Spacer(modifier = Modifier.width(8.dp))
+         AppText(
+             text = text,
+             style = MaterialTheme.typography.bodySmall,
+             color = if (isHighlight) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+         )
+     }
+ }
+
+@Composable
+fun VerificationBadge() {
+     Box(
+         modifier = Modifier
+             .background(
+                 color = Color(0xFF4CAF50).copy(alpha = 0.1f),
+                 shape = RoundedCornerShape(20.dp)
+             )
+             .padding(horizontal = 8.dp, vertical = 4.dp)
+     ) {
+         Row(
+             verticalAlignment = Alignment.CenterVertically,
+             horizontalArrangement = Arrangement.spacedBy(4.dp)
+         ) {
+             Icon(
+                 imageVector = Icons.Default.CheckCircle,
+                 contentDescription = stringResource(id = R.string.cd_verified),
+                 tint = Color(0xFF4CAF50),
+                 modifier = Modifier.size(16.dp)
+             )
+             AppText(
+                 text = "Verified",
+                 style = MaterialTheme.typography.labelSmall,
+                 color = Color(0xFF4CAF50),
+                 fontWeight = FontWeight.SemiBold
+             )
+         }
+     }
+ }
+
+@Composable
+fun CategoryChip(category: String) {
+     Box(
+         modifier = Modifier
+             .background(
+                 color = MaterialTheme.colorScheme.primaryContainer,
+                 shape = RoundedCornerShape(16.dp)
+             )
+             .padding(horizontal = 12.dp, vertical = 6.dp)
+     ) {
+         AppText(
+             text = category,
+             style = MaterialTheme.typography.labelSmall,
+             color = MaterialTheme.colorScheme.onPrimaryContainer,
+             fontWeight = FontWeight.Medium
+         )
+     }
+ }
+
+@Composable
+fun RatingBadge(rating: Double, reviewCount: Int) {
+     Box(
+         modifier = Modifier
+             .background(
+                 color = MaterialTheme.colorScheme.secondaryContainer,
+                 shape = RoundedCornerShape(12.dp)
+             )
+             .padding(horizontal = 10.dp, vertical = 6.dp)
+     ) {
+         Row(
+             verticalAlignment = Alignment.CenterVertically,
+             horizontalArrangement = Arrangement.spacedBy(4.dp)
+         ) {
+             Icon(
+                 imageVector = Icons.Default.Star,
+                 contentDescription = null,
+                 modifier = Modifier.size(14.dp),
+                 tint = Color(0xFFFFC107)
+             )
+             AppText(
+                 text = "%.1f".format(rating),
+                 style = MaterialTheme.typography.labelSmall,
+                 fontWeight = FontWeight.SemiBold,
+                 color = MaterialTheme.colorScheme.onSecondaryContainer
+             )
+             AppText(
+                 text = "($reviewCount)",
+                 style = MaterialTheme.typography.labelSmall,
+                 color = MaterialTheme.colorScheme.onSecondaryContainer
+             )
+         }
+     }
+ }
 
 @Preview(showBackground = true)
 @Composable

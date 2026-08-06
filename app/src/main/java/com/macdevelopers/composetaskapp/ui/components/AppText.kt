@@ -15,14 +15,18 @@ fun AppText(
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
     fontWeight: FontWeight? = null,
+    maxLines: Int? = Int.MAX_VALUE,
     color: Color = Color.Unspecified,
     onClick: (() -> Unit)? = null
 ) {
-    Text(
-        text = text,
-        modifier = if (onClick != null) modifier.clickable { onClick() } else modifier,
-        style = style,
-        fontWeight = fontWeight,
-        color = color
-    )
+    maxLines?.let {
+        Text(
+            text = text,
+            modifier = if (onClick != null) modifier.clickable { onClick() } else modifier,
+            style = style,
+            fontWeight = fontWeight,
+            maxLines = it,
+            color = color
+        )
+    }
 }
