@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class VendorDto(
-    val id: Int,
+    val id: String,
     val businessName: String,
     val description: String? = null,
     val category: String? = null,
@@ -12,5 +12,7 @@ data class VendorDto(
     val gstNumber: String? = null,
     val verified: Boolean = false,
     val ownerEmail: String? = null,
-    val createdAt: String? = null
+    val createdAt: String? = null,
+    val averageRating: Double? = null,
+    val totalReviews: Int? = null
 )

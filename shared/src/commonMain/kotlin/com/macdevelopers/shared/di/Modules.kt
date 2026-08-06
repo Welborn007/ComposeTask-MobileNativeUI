@@ -41,6 +41,7 @@ val commonModule = module {
         val builder = get<RoomDatabase.Builder<AppDatabase>>()
         builder.setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
+            .addMigrations(AppDatabase.MIGRATION_1_2)
             .build()
     }
 

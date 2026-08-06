@@ -6,7 +6,7 @@ import com.macdevelopers.shared.data.remote.dto.VendorDto
 
 @Entity(tableName = "vendors")
 data class VendorEntity(
-    @PrimaryKey val id: Int,
+    @PrimaryKey val id: String,
     val businessName: String,
     val description: String?,
     val category: String?,
@@ -14,7 +14,9 @@ data class VendorEntity(
     val gstNumber: String?,
     val verified: Boolean,
     val ownerEmail: String?,
-    val createdAt: String?
+    val createdAt: String?,
+    val averageRating: Double?,
+    val totalReviews: Int?
 )
 
 fun VendorEntity.toDto() = VendorDto(
@@ -26,7 +28,9 @@ fun VendorEntity.toDto() = VendorDto(
     gstNumber = gstNumber,
     verified = verified,
     ownerEmail = ownerEmail,
-    createdAt = createdAt
+    createdAt = createdAt,
+    averageRating = averageRating,
+    totalReviews = totalReviews
 )
 
 fun VendorDto.toEntity() = VendorEntity(
@@ -38,5 +42,7 @@ fun VendorDto.toEntity() = VendorEntity(
     gstNumber = gstNumber,
     verified = verified,
     ownerEmail = ownerEmail,
-    createdAt = createdAt
+    createdAt = createdAt,
+    averageRating = averageRating,
+    totalReviews = totalReviews
 )

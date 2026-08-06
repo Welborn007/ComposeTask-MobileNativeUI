@@ -279,7 +279,7 @@ fun HomeScreenPreview() {
             state = HomeUiState(
                 vendors = listOf(
                     VendorDto(
-                        id = 1,
+                        id = "ca7eca56-18ee-4101-8138-90616359a061",
                         businessName = "Wel corp",
                         description = "A small scale software development company based in Mumbai specializing in Mobile apps",
                         category = "IT Services",
@@ -287,10 +287,12 @@ fun HomeScreenPreview() {
                         gstNumber = "ABCD001246784",
                         verified = true,
                         ownerEmail = "john@example.com",
-                        createdAt = "2026-04-02T18:23:28.381056"
+                        createdAt = "2026-04-02T18:23:28.381056",
+                        averageRating = 0.0,
+                        totalReviews = 0
                     ),
                     VendorDto(
-                        id = 2,
+                        id = "sw7eca56-23ee-4101-8138-90616359a061",
                         businessName = "Tech Solutions",
                         description = "Providing modern web solutions for enterprise clients.",
                         category = "Software",
@@ -298,7 +300,9 @@ fun HomeScreenPreview() {
                         gstNumber = "GSTR123456789",
                         verified = false,
                         ownerEmail = "contact@techsol.com",
-                        createdAt = "2026-04-02T18:23:28.381056"
+                        createdAt = "2026-04-02T18:23:28.381056",
+                        averageRating = 10.0,
+                        totalReviews = 1
                     )
                 )
             ),
