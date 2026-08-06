@@ -24,7 +24,9 @@ fun AppNavGraph(startDestination: String = Screen.Login.route) {
                     }
                 },
                 onCreateAccountClick = {
-                    navController.navigate(Screen.Signup.route)
+                    navController.navigate(Screen.Signup.route){
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
                 },
                 onResetClick = {
                     navController.navigate(Screen.Reset.route)
@@ -35,10 +37,14 @@ fun AppNavGraph(startDestination: String = Screen.Login.route) {
         composable(Screen.Signup.route) {
             SignupScreen(
                 onSignupSuccess = {
-                    navController.popBackStack()
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(0)
+                    }
                 },
                 onLoginClick = {
-                    navController.popBackStack()
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Signup.route) { inclusive = true }
+                    }
                 }
             )
         }
