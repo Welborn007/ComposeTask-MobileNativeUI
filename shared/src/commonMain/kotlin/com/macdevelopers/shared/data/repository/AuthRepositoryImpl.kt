@@ -1,6 +1,7 @@
 package com.macdevelopers.shared.data.repository
 
 import com.macdevelopers.shared.data.remote.ApiService
+import com.macdevelopers.shared.data.remote.dto.UsersResponseDto
 import com.macdevelopers.shared.domain.model.UserRole
 import com.macdevelopers.shared.domain.repository.AuthRepository
 import com.macdevelopers.shared.util.getCurrentTimeMillis
@@ -34,6 +35,7 @@ class AuthRepositoryImpl(
                 authPreferencesProvider().saveTokenExpiryTime(expiryTimeMillis)
 
                 authPreferencesProvider().setLoggedIn(true)
+                getUserProfile() // Fetch and save user profile after login
                 Result.success(token)
             } else {
                 Result.failure(Exception(response.message))
@@ -65,6 +67,7 @@ class AuthRepositoryImpl(
                 authPreferencesProvider().saveTokenExpiryTime(expiryTimeMillis)
 
                 authPreferencesProvider().setLoggedIn(true)
+                getUserProfile() // Fetch and save user profile after signup
                 Result.success(token)
             } else {
                 Result.failure(Exception(response.message))
@@ -114,6 +117,31 @@ class AuthRepositoryImpl(
         authPreferencesProvider().clearAll()
     }
 
+    override suspend fun getUserProfile(): Result<UsersResponseDto> {
+        return try {
+            val response = apiService.getUserProfile()
+
+            if (response.success && response.data != null) {
+                val userData = response.data
+                authPreferencesProvider().saveUserData(userData)
+                Result.success(userData)
+            } else {
+                Result.failure(Exception(response.message))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getSavedUserData(): Result<UsersResponseDto?> {
+        return try {
+            val userData = authPreferencesProvider().getUserData()
+            Result.success(userData)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     /**
      * Helper function to ensure token is fresh before making API calls
      */
@@ -141,5 +169,7 @@ interface AuthPreferencesBridge {
     suspend fun getRefreshTokenValue(): String?
     suspend fun saveTokenExpiryTime(expiryTimeMillis: Long)
     suspend fun getTokenExpiryTime(): Long?
+    suspend fun saveUserData(usersResponseDto: UsersResponseDto)
+    suspend fun getUserData(): UsersResponseDto?
     suspend fun clearAll()
 }

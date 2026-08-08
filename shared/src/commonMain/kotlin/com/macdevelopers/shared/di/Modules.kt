@@ -9,9 +9,12 @@ import com.macdevelopers.shared.data.repository.AuthRepositoryImpl
 import com.macdevelopers.shared.data.repository.VendorRepositoryImpl
 import com.macdevelopers.shared.domain.repository.AuthRepository
 import com.macdevelopers.shared.domain.repository.VendorRepository
+import com.macdevelopers.shared.domain.usecase.GetVendorsUseCase
 import com.macdevelopers.shared.domain.usecase.IsUserLoggedInUseCase
+import com.macdevelopers.shared.domain.usecase.LogoutUseCase
 import com.macdevelopers.shared.domain.usecase.LoginUseCase
 import com.macdevelopers.shared.domain.usecase.SignupUseCase
+import com.macdevelopers.shared.domain.usecase.UserDataUseCase
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -70,6 +73,9 @@ val commonModule = module {
     factory { LoginUseCase(get()) }
     factory { SignupUseCase(get()) }
     factory { IsUserLoggedInUseCase(get()) }
+    factory { LogoutUseCase(get()) }
+    factory { GetVendorsUseCase(get()) }
+    factory { UserDataUseCase(get()) }
 }
 
 fun initKoin(appDeclaration: org.koin.dsl.KoinAppDeclaration = {}) = 

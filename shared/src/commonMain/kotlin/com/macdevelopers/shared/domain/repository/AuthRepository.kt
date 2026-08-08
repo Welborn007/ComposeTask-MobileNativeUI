@@ -1,5 +1,6 @@
 package com.macdevelopers.shared.domain.repository
 
+import com.macdevelopers.shared.data.remote.dto.UsersResponseDto
 import com.macdevelopers.shared.domain.model.UserRole
 
 interface AuthRepository {
@@ -17,4 +18,6 @@ interface AuthRepository {
     suspend fun refreshToken(): Result<String>
     suspend fun ensureTokenFresh(): Result<Unit>
     suspend fun logout()
+    suspend fun getUserProfile(): Result<UsersResponseDto>
+    suspend fun getSavedUserData(): Result<UsersResponseDto?>
 }

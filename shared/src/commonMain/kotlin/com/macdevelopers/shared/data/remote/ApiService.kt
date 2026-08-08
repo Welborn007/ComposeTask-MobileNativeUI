@@ -9,6 +9,7 @@ import com.macdevelopers.shared.data.remote.dto.RefreshTokenRequestDto
 import com.macdevelopers.shared.data.remote.dto.RefreshTokenResponseDto
 import com.macdevelopers.shared.data.remote.dto.SignupRequestDto
 import com.macdevelopers.shared.data.remote.dto.SignupResponseDto
+import com.macdevelopers.shared.data.remote.dto.UsersResponseDto
 import com.macdevelopers.shared.data.remote.dto.VendorDto
 import com.macdevelopers.shared.domain.model.UserRole
 import io.ktor.client.HttpClient
@@ -59,6 +60,15 @@ class ApiService(
             setBody(LogoutRequestDto(refreshToken))
         }.body()
     }
+
+    /**
+     * Users APIs
+     */
+
+    suspend fun getUserProfile(): ApiResponseDto<UsersResponseDto> {
+        return httpClient.get("${baseUrl}users/me").body()
+    }
+
 
     /**
      * Vendor APIs

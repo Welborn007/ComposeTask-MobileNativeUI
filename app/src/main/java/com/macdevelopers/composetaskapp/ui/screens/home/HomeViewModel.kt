@@ -4,8 +4,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.macdevelopers.shared.domain.repository.AuthRepository
-import com.macdevelopers.shared.domain.repository.VendorRepository
+import com.macdevelopers.shared.domain.usecase.GetVendorsUseCase
+import com.macdevelopers.shared.domain.usecase.LogoutUseCase
+import com.macdevelopers.shared.domain.usecase.UserDataUseCase
 import com.macdevelopers.shared.util.NetworkObserver
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,8 +14,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val authRepository: AuthRepository,
-    private val vendorRepository: VendorRepository,
+    private val getVendorsUseCase: GetVendorsUseCase,
+    private val logoutUseCase: LogoutUseCase,
+    private val userDataUseCase: UserDataUseCase,
     networkObserver: NetworkObserver
 ) : ViewModel() {
 
@@ -26,16 +28,28 @@ class HomeViewModel(
 
     init {
         getVendors()
+        getAuthDetails()
     }
 
     fun getAuthDetails(){
-
+        viewModelScope.launch {
+            try {
+                val userData = userDataUseCase()
+                _state.value = _state.value.copy(
+                    userName = userData.name,
+                    userEmail = userData.email,
+                    userRole = userData.role
+                )
+            } catch (e: Exception) {
+                // Handle error if needed
+            }
+        }
     }
 
     fun getVendors() {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true, error = null)
-            vendorRepository.getVendors()
+            getVendorsUseCase()
                 .onSuccess { vendors ->
                     _state.value = _state.value.copy(
                         vendors = vendors,
@@ -53,7 +67,7 @@ class HomeViewModel(
 
     fun logout() {
         viewModelScope.launch {
-            authRepository.logout()
+            logoutUseCase()
         }
     }
 }

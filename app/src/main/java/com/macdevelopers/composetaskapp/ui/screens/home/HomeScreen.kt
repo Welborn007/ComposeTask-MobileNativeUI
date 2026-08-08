@@ -60,6 +60,7 @@ import com.macdevelopers.composetaskapp.ui.theme.ComposeTaskAppTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.macdevelopers.shared.domain.model.UserRole
 
 @Composable
 fun HomeScreen(
@@ -107,12 +108,27 @@ fun HomeScreenContent(
                         .padding(24.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    AppText(
-                        text = stringResource(id = R.string.app_name),
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Column {
+                        AppText(
+                            text = stringResource(id = R.string.app_name),
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        )
+                        if (state.userName != null && state.userEmail != null) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            AppText(
+                                text = state.userName,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            AppText(
+                                text = state.userEmail,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 }
                 HorizontalDivider()
                 Spacer(modifier = Modifier.height(12.dp))
@@ -125,18 +141,20 @@ fun HomeScreenContent(
                     icon = { Icon(Icons.Default.Home, contentDescription = null) },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
-                NavigationDrawerItem(
-                    label = { AppText(text = stringResource(id = R.string.menu_profile)) },
-                    selected = false,
-                    onClick = {
-                        scope.launch {
-                            drawerState.close()
-                            onVendorProfileClick()
-                        }
-                    },
-                    icon = { Icon(Icons.Default.Person2, contentDescription = null) },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                )
+                if (state.userRole == UserRole.VENDOR.name) {
+                    NavigationDrawerItem(
+                        label = { AppText(text = stringResource(id = R.string.menu_profile)) },
+                        selected = false,
+                        onClick = {
+                            scope.launch {
+                                drawerState.close()
+                                onVendorProfileClick()
+                            }
+                        },
+                        icon = { Icon(Icons.Default.Person2, contentDescription = null) },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                    )
+                }
                 NavigationDrawerItem(
                     label = { AppText(text = stringResource(id = R.string.menu_logout)) },
                     selected = false,
