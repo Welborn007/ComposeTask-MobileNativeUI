@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person2
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -63,6 +64,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 fun HomeScreen(
     onLogout: () -> Unit,
+    onVendorProfileClick: () -> Unit,
     viewModel: HomeViewModel = koinViewModel()
 ) {
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
@@ -76,6 +78,9 @@ fun HomeScreen(
         },
         onRefresh = {
             viewModel.getVendors()
+        },
+        onVendorProfileClick = {
+            onVendorProfileClick()
         }
     )
 }
@@ -86,7 +91,8 @@ fun HomeScreenContent(
     state: HomeUiState,
     isConnected: Boolean,
     onLogout: () -> Unit,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    onVendorProfileClick: () -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -117,6 +123,18 @@ fun HomeScreenContent(
                         scope.launch { drawerState.close() }
                     },
                     icon = { Icon(Icons.Default.Home, contentDescription = null) },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+                NavigationDrawerItem(
+                    label = { AppText(text = stringResource(id = R.string.menu_profile)) },
+                    selected = false,
+                    onClick = {
+                        scope.launch {
+                            drawerState.close()
+                            onVendorProfileClick()
+                        }
+                    },
+                    icon = { Icon(Icons.Default.Person2, contentDescription = null) },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
                 NavigationDrawerItem(
@@ -441,7 +459,8 @@ fun HomeScreenPreview() {
             ),
             onLogout = {},
             onRefresh = {},
-            isConnected = true
+            isConnected = true,
+            onVendorProfileClick = {}
         )
     }
 }

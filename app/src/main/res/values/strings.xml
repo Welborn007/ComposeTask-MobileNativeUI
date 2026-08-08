@@ -45,6 +45,7 @@
     <!-- Home Screen -->
     <string name="menu_logout">Logout</string>
     <string name="menu_home">Home</string>
+    <string name="menu_profile">Vendor Profile</string>
     <string name="label_verified">Verified</string>
     <string name="label_gst">GST: %1$s</string>
     <string name="label_not_available">N/A</string>
@@ -54,4 +55,16 @@
     <string name="cd_network_error">Network Error Warning</string>
     <string name="cd_menu">Menu</string>
     <string name="cd_verified">Verified</string>
+    <string name="label_no_vendor_profile">No Vendor Profile</string>
+    <string name="label_no_vendor_profile_subtitle">You haven\'t created a vendor profile yet. Create one to get started and showcase your business.</string>
+    <string name="label_create_vendor_profile">Create Vendor Profile</string>
+    <string name="label_performance">Performance</string>
+    <string name="label_average_rating">Average Rating</string>
+    <string name="label_total_reviews">Total Reviews</string>
+    <string name="label_business_information">Business Information</string>
+    <string name="label_location">Location</string>
+    <string name="label_gst_number">GST Number</string>
+    <string name="label_contact_email">Contact Email</string>
+    <string name="label_member_since">Member Since</string>
+    <string name="label_edit_profile">Edit Profile</string>
 </resources>

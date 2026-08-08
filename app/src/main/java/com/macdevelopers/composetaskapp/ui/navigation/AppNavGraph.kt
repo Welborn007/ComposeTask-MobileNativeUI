@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.macdevelopers.composetaskapp.ui.screens.home.HomeScreen
 import com.macdevelopers.composetaskapp.ui.screens.login.LoginScreen
 import com.macdevelopers.composetaskapp.ui.screens.signup.SignupScreen
+import com.macdevelopers.composetaskapp.ui.screens.vendorProfile.VendorProfileScreen
 
 @Composable
 fun AppNavGraph(startDestination: String = Screen.Login.route) {
@@ -50,11 +51,28 @@ fun AppNavGraph(startDestination: String = Screen.Login.route) {
         }
 
         composable(Screen.Home.route) {
-            HomeScreen(onLogout = {
-                navController.navigate(Screen.Login.route) {
-                    popUpTo(0)
+            HomeScreen(
+                onLogout = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(0)
+                    }
+                },
+                onVendorProfileClick = {
+                    navController.navigate(Screen.VendorProfile.route)
                 }
-            })
+            )
+        }
+
+        composable(Screen.VendorProfile.route) {
+            VendorProfileScreen(
+                onBackClick = {
+                    navController.navigate(Screen.Home.route){
+                        popUpTo(0)
+                    }
+                },
+                onCreateProfileClick = {},
+                onEditProfileClick = {}
+            )
         }
     }
 }
