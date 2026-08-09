@@ -44,16 +44,20 @@ import com.macdevelopers.composetaskapp.ui.components.AppCard
 import com.macdevelopers.composetaskapp.ui.components.AppText
 import com.macdevelopers.composetaskapp.R
 import com.macdevelopers.composetaskapp.ui.theme.ComposeTaskAppTheme
+import org.koin.androidx.compose.koinViewModel
+import androidx.compose.material3.CircularProgressIndicator
 
 @Composable
 fun VendorProfileScreen(
-    vendor: VendorDto? = null,
+    viewModel: VendorProfileViewModel = koinViewModel(),
     onBackClick: () -> Unit,
     onCreateProfileClick: () -> Unit,
     onEditProfileClick: () -> Unit
 ) {
+    val state = viewModel.state.value
+
     VendorProfileScreenContent(
-        vendor = vendor,
+        state = state,
         onBackClick = onBackClick,
         onCreateProfileClick = onCreateProfileClick,
         onEditProfileClick = onEditProfileClick
@@ -63,7 +67,7 @@ fun VendorProfileScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VendorProfileScreenContent(
-    vendor: VendorDto?,
+    state: VendorProfileUiState,
     onBackClick: () -> Unit,
     onCreateProfileClick: () -> Unit,
     onEditProfileClick: () -> Unit
@@ -83,24 +87,41 @@ fun VendorProfileScreenContent(
             )
         }
     ) { paddingValues ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
         ) {
-            if (vendor == null) {
-                // Empty State - No Profile
-                NoProfileState(
-                    onCreateProfileClick = onCreateProfileClick,
-                    modifier = Modifier.fillMaxSize()
+            if (state.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else if (state.error != null) {
+                AppText(
+                    text = state.error,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(16.dp)
                 )
             } else {
-                // Profile Exists - Display Profile
-                ProfileExistsState(
-                    vendor = vendor,
-                    onEditProfileClick = onEditProfileClick
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    if (state.vendor == null) {
+                        // Empty State - No Profile
+                        NoProfileState(
+                            onCreateProfileClick = onCreateProfileClick,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        // Profile Exists - Display Profile
+                        ProfileExistsState(
+                            vendor = state.vendor,
+                            onEditProfileClick = onEditProfileClick
+                        )
+                    }
+                }
             }
         }
     }
@@ -476,18 +497,20 @@ fun CategoryChip(category: String) {
 fun VendorProfileScreenPreviewWithProfile() {
     ComposeTaskAppTheme {
         VendorProfileScreenContent(
-            vendor = VendorDto(
-                id = "ca7eca56-18ee-4101-8138-90616359a061",
-                businessName = "Wel Corp",
-                description = "A small scale software development company based in Mumbai specializing in Mobile apps and web solutions.",
-                category = "IT Services",
-                location = "Mumbai, Maharashtra, India",
-                gstNumber = "ABCD001246784",
-                verified = true,
-                ownerEmail = "john@example.com",
-                createdAt = "2026-04-02T18:23:28.381056",
-                averageRating = 4.5,
-                totalReviews = 12
+            state = VendorProfileUiState(
+                vendor = VendorDto(
+                    id = "ca7eca56-18ee-4101-8138-90616359a061",
+                    businessName = "Wel Corp",
+                    description = "A small scale software development company based in Mumbai specializing in Mobile apps and web solutions.",
+                    category = "IT Services",
+                    location = "Mumbai, Maharashtra, India",
+                    gstNumber = "ABCD001246784",
+                    verified = true,
+                    ownerEmail = "john@example.com",
+                    createdAt = "2026-04-02T18:23:28.381056",
+                    averageRating = 4.5,
+                    totalReviews = 12
+                )
             ),
             onBackClick = {},
             onCreateProfileClick = {},
@@ -501,7 +524,7 @@ fun VendorProfileScreenPreviewWithProfile() {
 fun VendorProfileScreenPreviewNoProfile() {
     ComposeTaskAppTheme {
         VendorProfileScreenContent(
-            vendor = null,
+            state = VendorProfileUiState(vendor = null),
             onBackClick = {},
             onCreateProfileClick = {},
             onEditProfileClick = {}

@@ -9,6 +9,7 @@ import com.macdevelopers.shared.data.repository.AuthRepositoryImpl
 import com.macdevelopers.shared.data.repository.VendorRepositoryImpl
 import com.macdevelopers.shared.domain.repository.AuthRepository
 import com.macdevelopers.shared.domain.repository.VendorRepository
+import com.macdevelopers.shared.domain.usecase.GetMyVendorUseCase
 import com.macdevelopers.shared.domain.usecase.GetVendorsUseCase
 import com.macdevelopers.shared.domain.usecase.IsUserLoggedInUseCase
 import com.macdevelopers.shared.domain.usecase.LogoutUseCase
@@ -26,7 +27,7 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 expect fun platformModule(): Module
 
 //private val baseUrl: String = "https://composetask-javaspringbootbackend.onrender.com/api/"
-private val baseUrl: String = "http://192.168.0.107:8080/api/"
+private val baseUrl: String = "http://192.168.0.102:8080/api/"
 
 val commonModule = module {
     single<HttpClient> { 
@@ -65,7 +66,8 @@ val commonModule = module {
     single<VendorRepository> {
         VendorRepositoryImpl(
             apiService = get<ApiService>(),
-            vendorDao = get()
+            vendorDao = get(),
+            authPreferencesProvider = { get<SharedAuthPreferences>() }
         )
     }
 
@@ -75,6 +77,7 @@ val commonModule = module {
     factory { IsUserLoggedInUseCase(get()) }
     factory { LogoutUseCase(get()) }
     factory { GetVendorsUseCase(get()) }
+    factory { GetMyVendorUseCase(get()) }
     factory { UserDataUseCase(get()) }
 }
 

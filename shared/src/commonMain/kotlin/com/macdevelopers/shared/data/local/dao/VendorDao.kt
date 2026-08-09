@@ -12,6 +12,9 @@ interface VendorDao {
     @Query("SELECT * FROM vendors")
     suspend fun getAllVendors(): List<VendorEntity>
 
+    @Query("SELECT * FROM vendors WHERE ownerEmail = :email LIMIT 1")
+    suspend fun getVendorByOwnerEmail(email: String): VendorEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertVendors(vendors: List<VendorEntity>)
 

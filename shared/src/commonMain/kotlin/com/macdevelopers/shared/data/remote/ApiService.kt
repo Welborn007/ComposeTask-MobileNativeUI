@@ -76,5 +76,9 @@ class ApiService(
     suspend fun getVendors(): ApiResponseDto<PaginatedResponseDto<VendorDto>> {
         return httpClient.get("${baseUrl}vendors").body()
     }
+
+    suspend fun getMyVendor(): ApiResponseDto<PaginatedResponseDto<VendorDto>> {
+        return httpClient.get("${baseUrl}vendors/my").body()
+    }
 }
 
