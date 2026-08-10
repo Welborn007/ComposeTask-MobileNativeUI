@@ -67,4 +67,10 @@
     <string name="label_contact_email">Contact Email</string>
     <string name="label_member_since">Member Since</string>
     <string name="label_edit_profile">Edit Profile</string>
+    <string name="label_business_name_hint">Business Name</string>
+    <string name="label_category_hint">Category</string>
+    <string name="label_description_hint">Description</string>
+    <string name="label_location_hint">Location</string>
+    <string name="label_gst_hint">GST Number</string>
+    <string name="label_cancel">Cancel</string>
 </resources>

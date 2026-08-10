@@ -1,6 +1,7 @@
 package com.macdevelopers.shared.data.remote
 
 import com.macdevelopers.shared.data.remote.dto.ApiResponseDto
+import com.macdevelopers.shared.data.remote.dto.CreateVendorDto
 import com.macdevelopers.shared.data.remote.dto.LoginRequestDto
 import com.macdevelopers.shared.data.remote.dto.LoginResponseDto
 import com.macdevelopers.shared.data.remote.dto.LogoutRequestDto
@@ -79,6 +80,13 @@ class ApiService(
 
     suspend fun getMyVendor(): ApiResponseDto<PaginatedResponseDto<VendorDto>> {
         return httpClient.get("${baseUrl}vendors/my").body()
+    }
+
+    suspend fun createVendor(createVendorDto: CreateVendorDto): ApiResponseDto<VendorDto> {
+        return httpClient.post("${baseUrl}vendors") {
+            contentType(ContentType.Application.Json)
+            setBody(createVendorDto)
+        }.body()
     }
 }
 

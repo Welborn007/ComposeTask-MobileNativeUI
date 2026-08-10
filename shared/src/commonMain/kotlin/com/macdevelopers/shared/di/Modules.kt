@@ -9,6 +9,7 @@ import com.macdevelopers.shared.data.repository.AuthRepositoryImpl
 import com.macdevelopers.shared.data.repository.VendorRepositoryImpl
 import com.macdevelopers.shared.domain.repository.AuthRepository
 import com.macdevelopers.shared.domain.repository.VendorRepository
+import com.macdevelopers.shared.domain.usecase.CreateVendorUseCase
 import com.macdevelopers.shared.domain.usecase.GetMyVendorUseCase
 import com.macdevelopers.shared.domain.usecase.GetVendorsUseCase
 import com.macdevelopers.shared.domain.usecase.IsUserLoggedInUseCase
@@ -78,6 +79,7 @@ val commonModule = module {
     factory { LogoutUseCase(get()) }
     factory { GetVendorsUseCase(get()) }
     factory { GetMyVendorUseCase(get()) }
+    factory { CreateVendorUseCase(get()) }
     factory { UserDataUseCase(get()) }
 }
 

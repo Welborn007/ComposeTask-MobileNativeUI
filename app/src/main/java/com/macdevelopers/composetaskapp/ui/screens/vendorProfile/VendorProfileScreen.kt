@@ -30,6 +30,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.macdevelopers.shared.data.remote.dto.VendorDto
+// ...existing imports...
 import com.macdevelopers.composetaskapp.ui.components.AppButton
 import com.macdevelopers.composetaskapp.ui.components.AppCard
 import com.macdevelopers.composetaskapp.ui.components.AppText
@@ -46,6 +51,10 @@ import com.macdevelopers.composetaskapp.R
 import com.macdevelopers.composetaskapp.ui.theme.ComposeTaskAppTheme
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+// removed KeyboardOptions/KeyboardType/ImeAction imports to keep UI-only form simple
 
 @Composable
 fun VendorProfileScreen(
@@ -60,7 +69,10 @@ fun VendorProfileScreen(
         state = state,
         onBackClick = onBackClick,
         onCreateProfileClick = onCreateProfileClick,
-        onEditProfileClick = onEditProfileClick
+        onEditProfileClick = onEditProfileClick,
+        onCreateVendor = { businessName: String, description: String?, category: String?, location: String?, gst: String? ->
+            viewModel.createVendor(businessName, description, category, location, gst)
+        }
     )
 }
 
@@ -70,8 +82,10 @@ fun VendorProfileScreenContent(
     state: VendorProfileUiState,
     onBackClick: () -> Unit,
     onCreateProfileClick: () -> Unit,
-    onEditProfileClick: () -> Unit
+    onEditProfileClick: () -> Unit,
+    onCreateVendor: (businessName: String, description: String?, category: String?, location: String?, gst: String?) -> Unit
 ) {
+    var showCreateForm by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -108,21 +122,159 @@ fun VendorProfileScreenContent(
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    if (state.vendor == null) {
-                        // Empty State - No Profile
-                        NoProfileState(
-                            onCreateProfileClick = onCreateProfileClick,
-                            modifier = Modifier.fillMaxSize()
+                    if (showCreateForm) {
+                        CreateVendorForm(
+                            onCancel = { showCreateForm = false },
+                            onCreate = { businessName, description, category, location, gst ->
+                                // Hide the form and call ViewModel create
+                                showCreateForm = false
+                                onCreateVendor(businessName, description, category, location, gst)
+                                // Also call external handler if the caller wants to navigate
+                                onCreateProfileClick()
+                            }
                         )
                     } else {
-                        // Profile Exists - Display Profile
-                        ProfileExistsState(
-                            vendor = state.vendor,
-                            onEditProfileClick = onEditProfileClick
-                        )
+                        if (state.vendor == null) {
+                            // Empty State - No Profile
+                            NoProfileState(
+                                onCreateProfileClick = { showCreateForm = true },
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        } else {
+                            // Profile Exists - Display Profile
+                            ProfileExistsState(
+                                vendor = state.vendor,
+                                onEditProfileClick = onEditProfileClick
+                            )
+                        }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun CreateVendorForm(
+    onCancel: () -> Unit,
+    onCreate: (businessName: String, description: String?, category: String?, location: String?, gst: String?) -> Unit
+) {
+    var businessName by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var location by remember { mutableStateOf("") }
+    var gst by remember { mutableStateOf("") }
+
+    var businessNameError by remember { mutableStateOf<String?>(null) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        val strCreateVendorTitle = stringResource(R.string.label_create_vendor_profile)
+        val strBusinessNameHint = stringResource(R.string.label_business_name_hint)
+        val strCategoryHint = stringResource(R.string.label_category_hint)
+        val strDescriptionHint = stringResource(R.string.label_description_hint)
+        val strLocationHint = stringResource(R.string.label_location_hint)
+        val strGstHint = stringResource(R.string.label_gst_hint)
+        val strCancel = stringResource(R.string.label_cancel)
+        val strErrorNameRequired = stringResource(R.string.error_name_required)
+        val strErrorInvalidEmail = stringResource(R.string.error_invalid_email)
+
+        AppText(
+            text = strCreateVendorTitle,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        OutlinedTextField(
+            value = businessName,
+            onValueChange = {
+                businessName = it
+                if (it.isNotBlank()) businessNameError = null
+            },
+            label = { Text(text = strBusinessNameHint) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+        if (businessNameError != null) {
+            AppText(text = businessNameError!!, color = MaterialTheme.colorScheme.error)
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = category,
+            onValueChange = { category = it },
+            label = { Text(text = strCategoryHint) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = description,
+            onValueChange = { description = it },
+            label = { Text(text = strDescriptionHint) },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = location,
+            onValueChange = { location = it },
+            label = { Text(text = strLocationHint) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = gst,
+            onValueChange = { gst = it },
+            label = { Text(text = strGstHint) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            TextButton(onClick = onCancel, modifier = Modifier.weight(1f)) {
+                Text(text = strCancel)
+            }
+            AppButton(
+                text = stringResource(R.string.label_create_vendor_profile),
+                onClick = {
+                    // Basic validation
+                    var valid = true
+                    if (businessName.isBlank()) {
+                        businessNameError = strErrorNameRequired
+                        valid = false
+                    }
+
+                    if (valid) {
+                        // Call create handler with raw inputs; ViewModel will build the DTO
+                        onCreate(
+                            businessName,
+                            if (description.isNullOrBlank()) null else description,
+                            if (category.isNullOrBlank()) null else category,
+                            if (location.isNullOrBlank()) null else location,
+                            if (gst.isNullOrBlank()) null else gst
+                        )
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            )
         }
     }
 }
@@ -512,9 +664,10 @@ fun VendorProfileScreenPreviewWithProfile() {
                     totalReviews = 12
                 )
             ),
-            onBackClick = {},
-            onCreateProfileClick = {},
-            onEditProfileClick = {}
+                    onBackClick = {},
+                    onCreateProfileClick = {},
+                    onEditProfileClick = {},
+                    onCreateVendor = { _, _, _, _, _ -> }
         )
     }
 }
@@ -527,7 +680,8 @@ fun VendorProfileScreenPreviewNoProfile() {
             state = VendorProfileUiState(vendor = null),
             onBackClick = {},
             onCreateProfileClick = {},
-            onEditProfileClick = {}
+            onEditProfileClick = {},
+            onCreateVendor = { _, _, _, _, _ -> }
         )
     }
 }

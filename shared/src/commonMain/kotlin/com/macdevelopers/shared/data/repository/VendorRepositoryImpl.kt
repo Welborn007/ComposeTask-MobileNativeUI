@@ -4,6 +4,7 @@ import com.macdevelopers.shared.data.local.dao.VendorDao
 import com.macdevelopers.shared.data.local.entity.toDto
 import com.macdevelopers.shared.data.local.entity.toEntity
 import com.macdevelopers.shared.data.remote.ApiService
+import com.macdevelopers.shared.data.remote.dto.CreateVendorDto
 import com.macdevelopers.shared.data.remote.dto.VendorDto
 import com.macdevelopers.shared.domain.repository.VendorRepository
 
@@ -72,6 +73,21 @@ class VendorRepositoryImpl(
             } catch (_: Exception) {
                 // ignore and return original exception below
             }
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun createVendor(createVendorDto: CreateVendorDto): Result<VendorDto> {
+        return try {
+            val response = apiService.createVendor(createVendorDto)
+            if (response.success && response.data != null) {
+                val createdVendor = response.data
+                vendorDao.insertVendor(createdVendor.toEntity())
+                Result.success(createdVendor)
+            } else {
+                Result.failure(Exception(response.message))
+            }
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }
